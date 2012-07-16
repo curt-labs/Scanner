@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:orientation="vertical"
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent">
+    	
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="#231f20"
+        android:contentDescription="CURT Manufacturing, LLC"
+        android:cropToPadding="true"
+        android:paddingBottom="10dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="10dp"
+        android:src="@drawable/logo" />
+    
+	<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@android:id/tabhost"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent">
+	    
+	    <LinearLayout
+	        android:orientation="vertical"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:padding="5dp">
+	        <View android:layout_width="fill_parent"
+	            android:layout_height="0.5dip"
+	            android:background="#ffffff" />
+	        <TabWidget
+	            android:id="@android:id/tabs"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="0dip"
+	            android:layout_marginRight="0dip" />
+	        <View android:layout_width="fill_parent"
+	            android:layout_height="2dip"
+	            android:background="#696969" />
+	        <View android:layout_width="fill_parent"
+	            android:layout_height="2dip"
+	            android:background="#ffffff" />
+	        <FrameLayout
+	            android:id="@android:id/tabcontent"
+	            android:background="#ededed"
+	            android:layout_width="fill_parent"
+	            android:layout_height="fill_parent" />
+	    </LinearLayout>
+	</TabHost>
+	<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:cacheColorHint="#ffffff"
+	    android:id="@android:id/list">
+	</ListView>
+</LinearLayout>
