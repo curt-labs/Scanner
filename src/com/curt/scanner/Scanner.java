@@ -28,9 +28,11 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -38,6 +40,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,9 +52,11 @@ import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -82,7 +90,7 @@ import curt.android.share.ShareActivity;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class Scanner extends Activity implements SurfaceHolder.Callback {
+public final class Scanner extends Activity implements SurfaceHolder.Callback, SensorEventListener {
 
   private static final String TAG = Scanner.class.getSimpleName();
 
@@ -130,7 +138,9 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback {
   private HistoryManager historyManager;
   private InactivityTimer inactivityTimer;
   private BeepManager beepManager;
-
+  private SensorManager sensorMgr;
+  private Sensor mAccelerometer;
+  
   private final DialogInterface.OnClickListener aboutListener =
       new DialogInterface.OnClickListener() {
         @Override
@@ -166,6 +176,8 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback {
     historyManager.trimHistory();
     inactivityTimer = new InactivityTimer(this);
     beepManager = new BeepManager(this);
+    sensorMgr = (SensorManager)getSystemService(SENSOR_SERVICE);
+    mAccelerometer = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -175,13 +187,13 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback {
   @Override
   protected void onResume() {
     super.onResume();
-
+    
     // CameraManager must be initialized here, not in onCreate(). This is necessary because we don't
     // want to open the camera driver and measure the screen size if we're going to show the help on
     // first launch. That led to bugs where the scanning rectangle was the wrong size and partially
     // off screen.
     cameraManager = new CameraManager(getApplication());
-
+    
     viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
     viewfinderView.setCameraManager(cameraManager);
 
@@ -207,6 +219,8 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback {
     }
 
     beepManager.updatePrefs();
+    
+    sensorMgr.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
     inactivityTimer.onResume();
 
@@ -405,6 +419,31 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback {
         }
       }
     }
+  }
+  
+  @Override
+  public void onAccuracyChanged(Sensor sensor, int accuracy) {
+  	// TODO Auto-generated method stub
+  	
+  }
+  
+  @SuppressWarnings("deprecation")
+public void onSensorChanged(SensorEvent evt){
+	  Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+	  int orientation = display.getOrientation();
+	  switch(orientation){
+		  case Surface.ROTATION_90: // Landscape
+			  	cameraManager.setOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+				break;
+		  case Surface.ROTATION_180: // Reverse Portrait
+			  cameraManager.setOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+				break;
+		  case Surface.ROTATION_270: // Reverse Landscape
+			  cameraManager.setOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+				break;
+		  default: // Portrait
+			  cameraManager.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	  }
   }
 
   private void decodeOrStoreSavedBitmap(Bitmap bitmap, Result result) {
@@ -789,4 +828,5 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback {
   public void drawViewfinder() {
     viewfinderView.drawViewfinder();
   }
+
 }

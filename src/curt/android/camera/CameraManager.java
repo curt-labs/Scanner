@@ -19,6 +19,7 @@ package curt.android.camera;
 import java.io.IOException;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera;
@@ -82,7 +83,7 @@ public final class CameraManager {
       camera = theCamera;
     }
     theCamera.setPreviewDisplay(holder);
-
+    
     if (!initialized) {
       initialized = true;
       configManager.initFromCameraParameters(theCamera);
@@ -259,6 +260,24 @@ public final class CameraManager {
       requestedFramingRectWidth = width;
       requestedFramingRectHeight = height;
     }
+  }
+  
+  public void setOrientation(int orient){
+	  if(camera != null){
+		  Log.e("Orient", Integer.toString(orient));
+		  switch(orient){
+			  case 0: //land
+				  camera.setDisplayOrientation(0);
+				  break;
+			  case 8: // reverse land
+				  Log.e("Orient", "throwing reverse land");
+				  camera.setDisplayOrientation(180);
+				  break;
+	
+			  default: // Make basic portrait
+				  camera.setDisplayOrientation(90);
+		  }
+	  }
   }
 
   /**
