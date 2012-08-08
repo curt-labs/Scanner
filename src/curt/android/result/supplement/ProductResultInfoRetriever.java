@@ -30,7 +30,7 @@ import com.curt.scanner.LocaleManager;
 import com.curt.scanner.R;
 
 import curt.android.history.HistoryManager;
-import curt.android.wifi.HttpHelper;
+import com.curt.scanner.HttpHelper;
 
 final class ProductResultInfoRetriever extends SupplementalInfoRetriever {
 

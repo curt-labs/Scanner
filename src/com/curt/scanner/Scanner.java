@@ -192,7 +192,7 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback, S
     // want to open the camera driver and measure the screen size if we're going to show the help on
     // first launch. That led to bugs where the scanning rectangle was the wrong size and partially
     // off screen.
-    cameraManager = new CameraManager(getApplication());
+    cameraManager = new CameraManager(getApplication(), this);
     
     viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
     viewfinderView.setCameraManager(cameraManager);
@@ -395,11 +395,12 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback, S
         break;
       case ABOUT_ID:
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.title_about) + versionName);
-        builder.setMessage(getString(R.string.msg_about) + "\n\n" + getString(R.string.zxing_url));
-        builder.setIcon(R.drawable.launcher_icon);
+        builder.setTitle("CURT Laser");
+        builder.setMessage("VIN Scanner built by CURT Manufacturing, LLC.\n\n Custom Development by Alex Ninneman");
+        builder.setIcon(R.drawable.icon);
+        /*
         builder.setPositiveButton(R.string.button_open_browser, aboutListener);
-        builder.setNegativeButton(R.string.button_cancel, null);
+        builder.setNegativeButton(R.string.button_cancel, null);*/
         builder.show();
         break;
       default:
@@ -436,13 +437,15 @@ public void onSensorChanged(SensorEvent evt){
 			  	cameraManager.setOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 				break;
 		  case Surface.ROTATION_180: // Reverse Portrait
-			  cameraManager.setOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+			  cameraManager.setOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			  portraitWarn();
 				break;
 		  case Surface.ROTATION_270: // Reverse Landscape
 			  cameraManager.setOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
 				break;
 		  default: // Portrait
-			  cameraManager.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			  cameraManager.setOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			  portraitWarn();
 	  }
   }
 
@@ -568,6 +571,16 @@ public void onSensorChanged(SensorEvent evt){
 
   // Put up our own UI for how to handle the decoded contents.
   private void handleDecodeInternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
+	
+	// We need to pull out the I at the beginning of the code
+	char first = rawResult.getText().charAt(0);
+	String code = rawResult.getText();
+	if(first == 'I'){
+		code = rawResult.getText().substring(1);
+	}
+	Log.e("Code", code);
+	  
+	  
     statusView.setVisibility(View.GONE);
     viewfinderView.setVisibility(View.GONE);
     resultView.setVisibility(View.VISIBLE);
@@ -575,7 +588,7 @@ public void onSensorChanged(SensorEvent evt){
     ImageView barcodeImageView = (ImageView) findViewById(R.id.barcode_image_view);
     if (barcode == null) {
       barcodeImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(),
-          R.drawable.launcher_icon));
+          R.drawable.icon));
     } else {
       barcodeImageView.setImageBitmap(barcode);
     }
@@ -613,7 +626,12 @@ public void onSensorChanged(SensorEvent evt){
     }
 
     TextView contentsTextView = (TextView) findViewById(R.id.contents_text_view);
-    CharSequence displayContents = resultHandler.getDisplayContents();
+    //CharSequence displayContents = resultHandler.getDisplayContents();
+    String displayContents = resultHandler.getDisplayContents().toString();
+    if(displayContents.charAt(0) == 'I'){
+    	displayContents = displayContents.substring(1);
+    }
+    
     contentsTextView.setText(displayContents);
     // Crudely scale betweeen 22 and 32 -- bigger font for shorter text
     int scaledSize = Math.max(22, 32 - displayContents.length() / 4);
@@ -644,6 +662,7 @@ public void onSensorChanged(SensorEvent evt){
         button.setVisibility(View.GONE);
       }
     }
+    buttonView.setVisibility(View.INVISIBLE);
 
     if (copyToClipboard && !resultHandler.areContentsSecure()) {
       ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -773,6 +792,10 @@ public void onSensorChanged(SensorEvent evt){
       Log.w(TAG, e);
     }
     return false;
+  }
+  
+  private void portraitWarn(){
+	  
   }
 
   private void initCamera(SurfaceHolder surfaceHolder) {

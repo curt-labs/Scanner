@@ -4,8 +4,8 @@
     		android:id="@+id/loading_layout"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
-			android:gravity="center" 
-			android:background="#000">
+			android:gravity="top" 
+			android:background="#fff">
 			
            <include layout="@layout/capture" />
 </LinearLayout>

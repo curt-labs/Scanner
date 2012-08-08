@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".Scanner"
+            android:screenOrientation="landscape"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:label="Preferences" android:name="PreferencesActivity"></activity>
+        <activity android:label="Help" android:name="HelpActivity"></activity>
+        <activity android:label="History" android:name="curt.android.history.HistoryActivity"></activity>
+        <activity android:label="Share" android:name="curt.android.share.ShareActivity"></activity>
     </application>
 
 </manifest>

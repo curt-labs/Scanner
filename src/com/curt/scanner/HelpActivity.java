@@ -66,24 +66,28 @@ public final class HelpActivity extends Activity {
     setContentView(R.layout.help);
 
     webView = (WebView)findViewById(R.id.help_contents);
-    webView.setWebViewClient(new HelpClient());
+    //webView.setWebViewClient(new HelpClient());
 
     // Froyo has a bug with calling onCreate() twice in a row, which causes the What's New page
     // that's auto-loaded on first run to appear blank. As a workaround we only call restoreState()
     // if a valid URL was loaded at the time the previous activity was torn down.
     Intent intent = getIntent();
-    if (icicle != null && icicle.getBoolean(WEBVIEW_STATE_PRESENT, false)) {
+    webView.loadUrl("http://www.curtmfg.com");
+    /*if (icicle != null && icicle.getBoolean(WEBVIEW_STATE_PRESENT, false)) {
       webView.restoreState(icicle);
     } else if (intent != null) {
       String page = intent.getStringExtra(REQUESTED_PAGE_KEY);
       if (page != null && page.length() > 0) {
-        webView.loadUrl(BASE_URL + page);
+    	  webView.loadUrl("http://www.curtmfg.com");
+        //webView.loadUrl(BASE_URL + page);
       } else {
-        webView.loadUrl(BASE_URL + DEFAULT_PAGE);
+    	  webView.loadUrl("http://www.curtmfg.com");
+        //webView.loadUrl(BASE_URL + DEFAULT_PAGE);
       }
     } else {
-      webView.loadUrl(BASE_URL + DEFAULT_PAGE);
-    }
+    	webView.loadUrl("http://www.curtmfg.com");
+      //webView.loadUrl(BASE_URL + DEFAULT_PAGE);
+    }*/
 
     backButton = (Button) findViewById(R.id.back_button);
     backButton.setOnClickListener(backListener);

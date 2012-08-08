@@ -19,15 +19,19 @@ package curt.android.camera;
 import java.io.IOException;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import com.curt.scanner.PlanarYUVLuminanceSource;
+import com.curt.scanner.R;
+import com.curt.scanner.Scanner;
+import com.curt.scanner.ViewfinderView;
 
 /**
  * This object wraps the Camera service object and expects to be the only one talking to it. The
@@ -46,6 +50,7 @@ public final class CameraManager {
   private static final int MAX_FRAME_HEIGHT = 400;
 
   private final Context context;
+  private final Scanner activity;
   private final CameraConfigurationManager configManager;
   private Camera camera;
   private AutoFocusManager autoFocusManager;
@@ -61,8 +66,9 @@ public final class CameraManager {
    */
   private final PreviewCallback previewCallback;
 
-  public CameraManager(Context context) {
+  public CameraManager(Context context, Scanner activity) {
     this.context = context;
+    this.activity = activity;
     this.configManager = new CameraConfigurationManager(context);
     previewCallback = new PreviewCallback(configManager);
   }
@@ -83,6 +89,12 @@ public final class CameraManager {
       camera = theCamera;
     }
     theCamera.setPreviewDisplay(holder);
+    
+    
+    ViewfinderView view = (ViewfinderView)activity.findViewById(R.id.viewfinder_view);
+    SurfaceView preview = (SurfaceView)activity.findViewById(R.id.preview_view);
+    requestedFramingRectWidth = view.getWidth();
+    requestedFramingRectHeight = view.getHeight();
     
     if (!initialized) {
       initialized = true;
@@ -264,7 +276,6 @@ public final class CameraManager {
   
   public void setOrientation(int orient){
 	  if(camera != null){
-		  Log.e("Orient", Integer.toString(orient));
 		  switch(orient){
 			  case 0: //land
 				  camera.setDisplayOrientation(0);

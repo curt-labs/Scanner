@@ -24,11 +24,11 @@ import android.content.Context;
 import android.os.Handler;
 import android.widget.TextView;
 
+import com.curt.scanner.HttpHelper;
 import com.curt.scanner.R;
 import com.google.zxing.client.result.URIParsedResult;
 
 import curt.android.history.HistoryManager;
-import curt.android.wifi.HttpHelper;
 
 final class URIResultInfoRetriever extends SupplementalInfoRetriever {
 

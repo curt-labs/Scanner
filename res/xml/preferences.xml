@@ -65,11 +65,11 @@
         android:defaultValue="false"
         android:title="@string/preferences_front_light_title"
         android:summary="@string/preferences_front_light_summary"/>
-    <CheckBoxPreference
+    <!--CheckBoxPreference
         android:key="preferences_bulk_mode"
         android:defaultValue="false"
         android:title="@string/preferences_bulk_mode_title"
-        android:summary="@string/preferences_bulk_mode_summary"/>
+        android:summary="@string/preferences_bulk_mode_summary"/-->
     <CheckBoxPreference
         android:key="preferences_reverse_image"
         android:defaultValue="false"
