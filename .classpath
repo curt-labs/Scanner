@@ -6,5 +6,21 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="lib" path="libs/core.jar"/>
 	<classpathentry kind="lib" path="libs/gson-2.1.jar"/>
+	<classpathentry kind="lib" path="libs/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="libs/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="libs/axiom-api-1.2.13.jar"/>
+	<classpathentry kind="lib" path="libs/axiom-impl-1.2.13.jar"/>
+	<classpathentry kind="lib" path="libs/axis2-adb-1.6.2.jar"/>
+	<classpathentry kind="lib" path="libs/axis2-kernel-1.6.2.jar"/>
+	<classpathentry kind="lib" path="libs/axis2-transport-http-1.6.2.jar"/>
+	<classpathentry kind="lib" path="libs/axis2-transport-local-1.6.2.jar"/>
+	<classpathentry kind="lib" path="libs/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="libs/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/httpcore-4.0.jar"/>
+	<classpathentry kind="lib" path="libs/mail-1.4.jar"/>
+	<classpathentry kind="lib" path="libs/neethi-3.0.2.jar"/>
+	<classpathentry kind="lib" path="libs/wsdl4j-1.6.2.jar"/>
+	<classpathentry kind="lib" path="libs/XmlSchema-1.4.7.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
