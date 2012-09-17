@@ -1,3 +1,4 @@
+
 package com.polk.decoder;
 
 import android.annotation.SuppressLint;
@@ -3391,7 +3392,7 @@ public class VinDecoderServiceStub extends org.apache.axis2.client.Stub {
 		public org.apache.axiom.om.OMElement getOMElement(
 				final javax.xml.namespace.QName parentQName,
 				final org.apache.axiom.om.OMFactory factory)
-				throws org.apache.axis2.databinding.ADBException {
+				/*throws org.apache.axis2.databinding.ADBException*/ {
 
 			org.apache.axiom.om.OMDataSource dataSource = new org.apache.axis2.databinding.ADBDataSource(
 					this, parentQName);
@@ -3696,7 +3697,7 @@ public class VinDecoderServiceStub extends org.apache.axis2.client.Stub {
 		 */
 		public javax.xml.stream.XMLStreamReader getPullParser(
 				javax.xml.namespace.QName qName)
-				throws org.apache.axis2.databinding.ADBException {
+				/*throws org.apache.axis2.databinding.ADBException*/ {
 
 			java.util.ArrayList elementList = new java.util.ArrayList();
 			java.util.ArrayList attribList = new java.util.ArrayList();
