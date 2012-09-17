@@ -4,10 +4,12 @@
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     
     <uses-sdk
         android:minSdkVersion="15"
         android:targetSdkVersion="15" />
+    
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -19,7 +21,6 @@
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -27,6 +28,7 @@
         <activity android:label="Help" android:name="HelpActivity"></activity>
         <activity android:label="History" android:name="curt.android.history.HistoryActivity"></activity>
         <activity android:label="Share" android:name="curt.android.share.ShareActivity"></activity>
+        <activity android:name="PartResult" android:theme="@style/AppTheme" uiOptions="splitActionBarWhenNarrow"></activity>
     </application>
 
 </manifest>

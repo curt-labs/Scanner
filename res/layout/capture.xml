@@ -164,7 +164,7 @@
                     android:textSize="22sp"
                     android:paddingLeft="12dip"
                     android:autoLink="web"/>
-
+          
           <TextView android:id="@+id/contents_supplement_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

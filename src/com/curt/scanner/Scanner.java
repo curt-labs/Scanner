@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,6 +47,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -63,10 +66,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.curt.parts.Part;
+import com.curt.vehicle.Vehicle;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
@@ -638,8 +645,22 @@ public void onSensorChanged(SensorEvent evt){
     contentsTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);
 
     TextView supplementTextView = (TextView) findViewById(R.id.contents_supplement_text_view);
-    supplementTextView.setText("");
-    supplementTextView.setOnClickListener(null);
+    supplementTextView.setText("Allow Alfred to decode that garbage for you...");
+    //new GetPartsAsync().execute(null,null,null);
+    
+    if (copyToClipboard && !resultHandler.areContentsSecure()) {
+	    ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+	    clipboard.setText(displayContents);
+	  }
+    
+    Intent intent = new Intent(this,PartResult.class);
+    intent.putExtra("year", Double.parseDouble("2006"));
+    intent.putExtra("make", "Pontiac");
+    intent.putExtra("model", "G6");
+    intent.putExtra("style", "Sedan");
+    startActivity(intent);
+    
+    /*supplementTextView.setOnClickListener(null);
     if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
         PreferencesActivity.KEY_SUPPLEMENTAL, true)) {
       SupplementalInfoRetriever.maybeInvokeRetrieval(supplementTextView,
@@ -662,12 +683,9 @@ public void onSensorChanged(SensorEvent evt){
         button.setVisibility(View.GONE);
       }
     }
-    buttonView.setVisibility(View.INVISIBLE);
+    buttonView.setVisibility(View.VISIBLE);*/
 
-    if (copyToClipboard && !resultHandler.areContentsSecure()) {
-      ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-      clipboard.setText(displayContents);
-    }
+    
   }
 
   // Briefly show the contents of the barcode, then handle the result outside Barcode Scanner.
@@ -852,4 +870,54 @@ public void onSensorChanged(SensorEvent evt){
     viewfinderView.drawViewfinder();
   }
 
+  
+  public class GetPartsAsync extends AsyncTask<Void, View, View>{
+
+	@Override
+	protected View doInBackground(Void...params) {
+		
+		Vehicle vehicle = new Vehicle();
+		vehicle.setYear(2006);
+		vehicle.setMake("Pontiac");
+		vehicle.setModel("G6");
+		vehicle.setStyle("Sedan");
+		
+		TextView supplementTextView = (TextView) findViewById(R.id.contents_supplement_text_view);
+	    supplementTextView.setText("Vehicle discovered as: " + vehicle.getYear() + " " + vehicle.getMake() + " " + vehicle.getModel() + " " + vehicle.getStyle());
+		
+	    ArrayList<Part> parts = vehicle.GetParts();
+	    Iterator<Part> i = parts.iterator();
+	    HorizontalScrollView view = new HorizontalScrollView(getApplicationContext());
+	    LinearLayout linear = new LinearLayout(getApplicationContext());
+	    //HorizontalScrollView view = (HorizontalScrollView) findViewById(R.id.part_list);
+	    while(i.hasNext()){
+	    	Part part = i.next();
+	    	if(part.images.size() > 0){
+	    		ImageView img = new ImageView(getApplicationContext());
+	    		Uri uri = Uri.parse(part.images.get(0).path);
+		    	img.setImageURI(uri);
+		    	linear.addView(img);
+	    	}else{
+	    		TextView txt = new TextView(getApplicationContext());
+	    		txt.setText(part.shortDesc);
+	    		view.addView(txt);
+	    	}
+	    }
+	    
+	    view.addView(linear);
+	    return view;
+	}
+	
+	protected void onPostExecute(View viewList){
+		
+		if(viewList != null){
+			LinearLayout view = (LinearLayout)findViewById(R.id.result_view);
+			view.removeAllViewsInLayout();
+			view.addView(viewList);
+		}
+	}
+	
+  }
+  
+  
 }
