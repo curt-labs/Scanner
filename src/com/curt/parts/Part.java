@@ -2,6 +2,8 @@ package com.curt.parts;
 
 import java.util.ArrayList;
 
+import android.widget.RelativeLayout;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -48,5 +50,7 @@ public class Part {
     public String exposed = "";
     public int vehicleID = 0;
     public int priceCode = 0;
+    
+    public RelativeLayout resultDisplay = null;
 	
 }
