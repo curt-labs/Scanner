@@ -1,0 +1,143 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/partResultItem"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/result_heading"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+	    <LinearLayout
+	        android:id="@+id/result_image_container"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="5dp" >
+	
+	        <ImageView
+	            android:id="@+id/partResultImage"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center_vertical|center_horizontal"
+	            android:contentDescription="@string/part_image"
+	            android:visibility="gone" />
+	
+	        <ProgressBar
+	            android:id="@+id/image_loader"
+	            style="?android:attr/progressBarStyle"
+	            android:layout_width="40dp"
+	            android:layout_height="40dp"
+	            android:layout_gravity="center_vertical|center_horizontal"
+	            android:indeterminate="true" />
+		    
+	    </LinearLayout>
+	    
+	    <TextView
+	        android:id="@+id/partResultDesc"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="5dp"
+	        android:textSize="18dp"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	</LinearLayout>
+    
+    
+
+    <TabHost
+        android:id="@+id/result_tab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/result_heading"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="160dp"
+        android:layout_alignParentTop="true" >
+
+       <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="vertical" >
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/result_heading_size" />
+
+            <LinearLayout
+                android:id="@+id/tabbar"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:background="#f4f4f4"
+                android:layout_height="match_parent" >
+
+                <Button android:id="@+id/info"
+                    android:background="#fff"
+                    android:layout_width="100dp"
+                    android:layout_height="43dp"
+                    android:text="Info"
+                    android:clickable="true"></Button>
+                
+                <Button android:id="@+id/related"
+                    android:background="#f3f3f3"
+                    android:layout_width="100dp"
+                    android:layout_height="43dp"
+                    android:text="Related"
+                    android:clickable="true"></Button>
+
+                <Button android:id="@+id/images"
+                    android:background="#f3f3f3"
+                    android:layout_width="100dp"
+                    android:layout_height="43dp"
+                    android:text="Images"
+                    android:clickable="true"></Button>
+            </LinearLayout>
+            
+            <FrameLayout android:id="@android:id/tabcontent"
+	            android:layout_width="fill_parent" 
+	            android:layout_height="fill_parent"
+	            android:layout_below="@+id/tabbar" />
+        </RelativeLayout>
+    </TabHost>
+
+    <!--LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/result_image_container"
+        android:layout_marginTop="4dp"
+        android:gravity="center_horizontal"
+        android:layout_centerHorizontal="true" >
+
+        <LinearLayout
+            android:id="@+id/pdf_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left" >
+
+            <ImageView
+                android:id="@+id/part_result_pdf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_action_attachment"
+                android:contentDescription="@string/part_image" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/video_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right" >
+
+            <ImageView
+                android:id="@+id/part_result_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@drawable/ic_action_slideshow"
+                android:contentDescription="@string/part_image" />
+        </LinearLayout>
+    </LinearLayout-->
+
+    
+    
+</RelativeLayout>

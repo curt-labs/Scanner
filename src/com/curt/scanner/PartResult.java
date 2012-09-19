@@ -1,12 +1,17 @@
 package com.curt.scanner;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,9 +26,12 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.curt.images.ImageHelper;
 import com.curt.parts.Part;
 import com.curt.parts.PartImage;
 import com.curt.vehicle.Vehicle;
@@ -31,8 +39,9 @@ import com.curt.vehicle.Vehicle;
 public class PartResult extends FragmentActivity {
 
 	public CollectionPagerAdapter pagerAdapter;
+	public FragmentManager fManager;
 	public ViewPager viewPager;
-	public ArrayList<Part> parts;
+	public static ArrayList<Part> parts;
 	
 	public double year;
 	public String make;
@@ -42,7 +51,7 @@ public class PartResult extends FragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pager_main);
-
+		
 		if(parts == null){
 			Bundle extras = getIntent().getExtras();
 			this.year = extras.getDouble("year");
@@ -63,11 +72,13 @@ public class PartResult extends FragmentActivity {
 			
 			viewPager = (ViewPager)findViewById(R.id.pager);
 			viewPager.setAdapter(pagerAdapter);
+			viewPager.setCurrentItem(0);
 		}
 	}
 	
 	@Override
 	public void onResume(){
+		
 		if(parts == null){
 			Bundle extras = getIntent().getExtras();
 			this.year = extras.getDouble("year");
@@ -88,17 +99,24 @@ public class PartResult extends FragmentActivity {
 			
 			viewPager = (ViewPager)findViewById(R.id.pager);
 			viewPager.setAdapter(pagerAdapter);
+			viewPager.setCurrentItem(0);
 		}
 		
 		super.onResume();
 	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		getMenuInflater().inflate(R.menu.result, menu);
-
-		getActionBar().setDisplayShowTitleEnabled(false);
+		
+		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+			getActionBar().setDisplayShowTitleEnabled(false);
+		}else{
+			getActionBar().setDisplayShowTitleEnabled(true);
+		}
+		
 
 		MenuItem vehicle = menu.findItem(R.id.vehicle);
 		vehicle.setTitle(this.year + " " + this.make + " " + this.model + " "
@@ -170,6 +188,10 @@ public class PartResult extends FragmentActivity {
 		private Part part = null;
 		
 		
+		public PartObjectFragment(){
+			setRetainInstance(true);
+		}
+		
 		public void SetPart(Part p){
 			this.part = p;
 		}
@@ -194,7 +216,7 @@ public class PartResult extends FragmentActivity {
 				String imgPath = null;
 				while(imgIter.hasNext() && imgPath == null ){
 					PartImage pImg = imgIter.next();
-					if(pImg.sort == 'a' && pImg.width == 300){
+					if(pImg.sort == 'a' && pImg.width == 238){
 						imgPath = pImg.path;
 					}
 				}
@@ -203,11 +225,14 @@ public class PartResult extends FragmentActivity {
 				}
 				
 				img.setTag(imgPath);
-				img.setMinimumHeight(300);
-				img.setMinimumWidth(300);
-				img.setMaxHeight(301);
-				img.setMaxWidth(301);
-				new DownloadImagesAsync().execute(img);
+				img.setMinimumHeight(238);
+				img.setMinimumWidth(238);
+				img.setMaxHeight(239);
+				img.setMaxWidth(239);
+				DownloadImagesAsync imgLoader = new DownloadImagesAsync();
+				ProgressBar bar = (ProgressBar)layout.findViewById(R.id.image_loader);
+				imgLoader.bar = bar;
+				imgLoader.execute(img);
 				
 			}
 			
@@ -227,23 +252,41 @@ public class PartResult extends FragmentActivity {
 		}
 
 		protected void onPostExecute(ArrayList<Part> parts) {
-
-			pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
-			pagerAdapter.parts = parts;
-			
-			viewPager = (ViewPager)findViewById(R.id.pager);
-			viewPager.setAdapter(pagerAdapter);
-
+			try{
+				pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
+				pagerAdapter.parts = parts;
+				
+				viewPager = (ViewPager)findViewById(R.id.pager);
+				viewPager.setAdapter(pagerAdapter);
+				viewPager.setCurrentItem(0);
+			}catch(Exception e){
+				e.printStackTrace();
+				Bundle bundle = getIntent().getExtras();
+				Bundle extras = getIntent().getExtras();
+				double year = extras.getDouble("year");
+				String make = extras.getString("make");
+				String model = extras.getString("model");
+				String style = extras.getString("style");
+				
+				Vehicle vehicle = new Vehicle();
+				vehicle.setYear(year);
+				vehicle.setMake(make);
+				vehicle.setModel(model);
+				vehicle.setStyle(style);
+				
+				new GetPartsAsync().execute(vehicle, null, null);
+			}
 		}
 
 	}
 
 	public static class DownloadImagesAsync extends
-			AsyncTask<ImageView, Void, Drawable> {
+			AsyncTask<ImageView, Void, Bitmap> {
 		ImageView imageView = null;
+		ProgressBar bar = null;
 
 		@Override
-		protected Drawable doInBackground(ImageView... imageViews) {
+		protected Bitmap doInBackground(ImageView... imageViews) {
 			this.imageView = imageViews[0];
 			String url = (String) imageView.getTag();
 			try {
@@ -257,15 +300,19 @@ public class PartResult extends FragmentActivity {
 		}
 
 		@Override
-		protected void onPostExecute(Drawable result) {
-			imageView.setBackgroundDrawable(result);
+		protected void onPostExecute(Bitmap result) {
+			imageView.setImageBitmap(result);
+			bar.setVisibility(View.INVISIBLE);
+			imageView.setVisibility(View.VISIBLE);
+			//imageView.setBackgroundDrawable(result);
 		}
 
-		private Drawable download_image(String url)
-				throws MalformedURLException, IOException {
-			return Drawable.createFromStream(
-					((java.io.InputStream) new java.net.URL(url).getContent()),
-					url);
+		private Bitmap download_image(String u) throws IOException {
+			URL url = new URL(u);
+			URLConnection conn = url.openConnection();
+			conn.setUseCaches(true);
+			return ImageHelper.getRoundedCornerBitmap(BitmapFactory.decodeStream((InputStream)conn.getContent()), 6);
+			
 		}
 	}
 }
