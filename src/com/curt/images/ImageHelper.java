@@ -31,7 +31,7 @@ public class ImageHelper {
 		paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
 		innerCvs.drawBitmap(bmp, rect, rect, paint);
 		
-		Bitmap outer = Bitmap.createBitmap(bmp.getWidth() + 10, bmp.getHeight() + 10, Config.ARGB_8888);
+		Bitmap outer = Bitmap.createBitmap(bmp.getWidth() + 4, bmp.getHeight() + 4, Config.ARGB_8888);
 		Canvas outerCvs = new Canvas(outer);
 		Paint shadowPaint = new Paint();
 		shadowPaint.setColor(Color.BLACK);

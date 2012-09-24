@@ -29,6 +29,7 @@ public class Part {
 	
 
 	public ArrayList<PartAttribute> attributes = new ArrayList<PartAttribute>();
+	public ArrayList<PartAttribute> content = new ArrayList<PartAttribute>();
 	public ArrayList<PartAttribute> vehicleattributes = new ArrayList<PartAttribute>();
     public ArrayList<PartAttribute> pricing = new ArrayList<PartAttribute>();
     public ArrayList<PartReview> reviews = new ArrayList<PartReview>();
@@ -50,7 +51,5 @@ public class Part {
     public String exposed = "";
     public int vehicleID = 0;
     public int priceCode = 0;
-    
-    public RelativeLayout resultDisplay = null;
 	
 }

@@ -8,10 +8,12 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,18 +27,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.curt.images.ImageHelper;
 import com.curt.parts.Part;
+import com.curt.parts.PartAttribute;
 import com.curt.parts.PartImage;
 import com.curt.vehicle.Vehicle;
 
-public class PartResult extends FragmentActivity {
+public class PartResult extends FragmentActivity implements OnClickListener {
 
 	public CollectionPagerAdapter pagerAdapter;
 	public FragmentManager fManager;
@@ -103,6 +107,21 @@ public class PartResult extends FragmentActivity {
 		}
 		
 		super.onResume();
+	}
+	
+	@Override
+	public void onClick(View v){
+		if(v.getId() == R.id.pdf_button){
+			String sheet = (String)v.getTag();
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setDataAndType(Uri.parse(sheet), "application/pdf");
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			try{
+				startActivity(intent);
+			}catch(ActivityNotFoundException e){
+				Toast.makeText(v.getContext(), "No Application Available to View PDF", Toast.LENGTH_SHORT).show();
+			}
+		}
 	}
 	
 
@@ -202,9 +221,6 @@ public class PartResult extends FragmentActivity {
 			if(part == null){
 				return layout;
 			}
-			if(part.resultDisplay != null){
-				return part.resultDisplay;
-			}
 			
 			
 			TextView title = (TextView)layout.findViewById(R.id.partResultDesc);
@@ -216,7 +232,7 @@ public class PartResult extends FragmentActivity {
 				String imgPath = null;
 				while(imgIter.hasNext() && imgPath == null ){
 					PartImage pImg = imgIter.next();
-					if(pImg.sort == 'a' && pImg.width == 238){
+					if(pImg.sort == 'a' && pImg.width == 300){
 						imgPath = pImg.path;
 					}
 				}
@@ -225,15 +241,30 @@ public class PartResult extends FragmentActivity {
 				}
 				
 				img.setTag(imgPath);
-				img.setMinimumHeight(238);
-				img.setMinimumWidth(238);
-				img.setMaxHeight(239);
-				img.setMaxWidth(239);
+				img.setMinimumHeight(300);
+				img.setMinimumWidth(300);
+				img.setMaxHeight(301);
+				img.setMaxWidth(301);
 				DownloadImagesAsync imgLoader = new DownloadImagesAsync();
 				ProgressBar bar = (ProgressBar)layout.findViewById(R.id.image_loader);
 				imgLoader.bar = bar;
 				imgLoader.execute(img);
-				
+			}
+			
+			String installSheet = null;
+			TextView pdfButton = (TextView)layout.findViewById(R.id.pdf_button);
+			pdfButton.setVisibility(View.INVISIBLE);
+			Iterator<PartAttribute> conIter = part.content.iterator();
+			while(conIter.hasNext() && installSheet == null){
+				PartAttribute content = conIter.next();
+				if(content.key.toUpperCase() == "INSTALLATIONSHEET"){
+					installSheet = content.value;
+					break;
+				}
+			}
+			if(installSheet != null){
+				pdfButton.setTag(installSheet);
+				pdfButton.setVisibility(View.VISIBLE);
 			}
 			
 			return layout;

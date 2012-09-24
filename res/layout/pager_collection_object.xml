@@ -13,14 +13,12 @@
         android:textSize="22dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/result_image_container"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/partResultDesc"
         android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
         android:layout_marginTop="39dp" >
         
         <ProgressBar
@@ -32,13 +30,14 @@
 	        android:indeterminate="true" />
 	    
 	    <ImageView
-	        android:contentDescription="@string/part_image"
 	        android:id="@+id/partResultImage"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical|center_horizontal"
-	        android:visibility="gone" />
-    </LinearLayout>
+	        android:layout_gravity="center"
+	        android:visibility="gone"
+	        android:contentDescription="@string/part_image" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -55,6 +54,7 @@
             android:drawableLeft="@drawable/ic_action_attachment"
             android:gravity="center_vertical"
             android:padding="5dp"
+            android:clickable="true"
             android:text="@string/part_result_pdf" />
 
 		<TextView
@@ -63,6 +63,7 @@
             android:layout_height="wrap_content"
             android:text="@string/part_result_video"
             android:gravity="center_vertical"
+            android:clickable="true"
             android:drawableLeft="@drawable/ic_action_slideshow"
             android:padding="5dp" />
 
