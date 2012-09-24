@@ -36,6 +36,7 @@
 	        android:id="@+id/partResultImage"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_vertical|center_horizontal"
 	        android:visibility="gone" />
     </LinearLayout>
 
@@ -47,34 +48,24 @@
         android:gravity="center_horizontal"
         android:layout_centerHorizontal="true" >
 
-        <LinearLayout
-            android:id="@+id/pdf_buttons"
+        <TextView
+            android:id="@+id/pdf_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="left" >
+            android:drawableLeft="@drawable/ic_action_attachment"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:text="@string/part_result_pdf" />
 
-            <ImageView
-                android:id="@+id/part_result_pdf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_action_attachment"
-                android:contentDescription="@string/part_image" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/video_buttons"
+		<TextView
+		    android:id="@+id/video_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="right" >
+            android:text="@string/part_result_video"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_action_slideshow"
+            android:padding="5dp" />
 
-            <ImageView
-                android:id="@+id/part_result_video"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="@drawable/ic_action_slideshow"
-                android:contentDescription="@string/part_image" />
-        </LinearLayout>
     </LinearLayout>
     
 </RelativeLayout>
