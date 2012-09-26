@@ -63,7 +63,6 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
@@ -74,6 +73,7 @@ import android.widget.Toast;
 
 import com.curt.parts.Part;
 import com.curt.vehicle.Vehicle;
+import com.curt.vehicle.VinDecoder;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
@@ -83,10 +83,8 @@ import curt.android.camera.CameraManager;
 import curt.android.history.HistoryActivity;
 import curt.android.history.HistoryItem;
 import curt.android.history.HistoryManager;
-import curt.android.result.ResultButtonListener;
 import curt.android.result.ResultHandler;
 import curt.android.result.ResultHandlerFactory;
-import curt.android.result.supplement.SupplementalInfoRetriever;
 import curt.android.share.ShareActivity;
 
 /**
@@ -147,6 +145,7 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback, S
   private BeepManager beepManager;
   private SensorManager sensorMgr;
   private Sensor mAccelerometer;
+  private VinDecoder decoder;
   
   private final DialogInterface.OnClickListener aboutListener =
       new DialogInterface.OnClickListener() {
@@ -652,6 +651,8 @@ public void onSensorChanged(SensorEvent evt){
 	    ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 	    clipboard.setText(displayContents);
 	  }
+    
+    decoder = new VinDecoder();
     
     Intent intent = new Intent(this,PartResult.class);
     intent.putExtra("year", Double.parseDouble("2006"));
