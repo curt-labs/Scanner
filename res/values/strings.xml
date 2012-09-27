@@ -79,6 +79,7 @@
 	<string name="msg_share_text">Or type some text and press Enter</string>
 	<string name="msg_sure">Are you sure?</string>
 	<string name="msg_unmount_usb">Sorry, the SD card is not accessible.</string>
+	<string name="no_parts_found">No parts found.</string>
 	<string name="part_image">Part Image.</string>
 	<string name="part_result_pdf">PDF</string>
 	<string name="part_result_video">Video</string>

@@ -2,6 +2,7 @@ package com.curt.vehicle;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
@@ -12,6 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.curt.parts.Part;
 import com.curt.parts.PartAttribute;
@@ -202,7 +204,7 @@ public class Vehicle {
 	public ArrayList<PartAttribute> attributes = new ArrayList<PartAttribute>();
 	
 	
-	public ArrayList<Part> GetParts(){
+	public ArrayList<Part> GetParts() throws UnknownHostException{
 		ArrayList<Part> parts = new ArrayList<Part>();
 		
 		String url = "https://api.curtmfg.com/v2/GetParts?dataType=json" +
@@ -211,7 +213,6 @@ public class Vehicle {
 				"&model=" + this.getModel() +
 				"&style=" + this.getStyle();
 		HttpClient client = new DefaultHttpClient();
-		Log.e("Vehicle URL",url);
 		HttpGet httpGet = new HttpGet(url);
 		try{
 			HttpResponse resp = client.execute(httpGet);
@@ -226,6 +227,9 @@ public class Vehicle {
 			}
 		}catch(ClientProtocolException e){
 			e.printStackTrace();
+		}catch(UnknownHostException e){
+			e.printStackTrace();
+			throw new UnknownHostException();
 		}catch(IOException e){
 			e.printStackTrace();
 		}

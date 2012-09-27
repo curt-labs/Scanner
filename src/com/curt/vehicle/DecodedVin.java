@@ -1,17 +1,17 @@
 package com.curt.vehicle;
 
 public class DecodedVin{
-   	private String vIN;
+   	private String vin;
    	private String valid;
    	private String status;
    	private Vehicle vehicle;
    	private String version;
 
  	public String getVIN(){
-		return this.vIN;
+		return this.vin;
 	}
-	public void setVIN(String vIN){
-		this.vIN = vIN;
+	public void setVIN(String vin){
+		this.vin = vin;
 	}
  	public String getValid(){
 		return this.valid;

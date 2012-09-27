@@ -67,7 +67,6 @@ final class CameraConfigurationManager {
 
 	CameraConfigurationManager(Context context) {
 		this.context = context;
-		Log.e("Orientation Change", "Constructor");
 	}
 
 	/**
@@ -112,18 +111,6 @@ final class CameraConfigurationManager {
 	}
 	
 	void setDesiredCameraParameters(Camera camera) {
-
-		/*Configuration c = context.getResources().getConfiguration();
-		
-		
-		if (c.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			Log.e("Orientation", "Landscape");
-			camera.setDisplayOrientation(mDeviceOrientation);
-		} else {
-			Log.e("Orientation", "Portrait");
-			camera.setDisplayOrientation(0);
-			camera.setDisplayOrientation(90);
-		}*/
 		
 		Camera.Parameters parameters = camera.getParameters();
 

@@ -10,14 +10,14 @@
     <uses-sdk
         android:minSdkVersion="15"
         android:targetSdkVersion="15" />
-    
 
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".Scanner"
+            android:noHistory="true"
             android:screenOrientation="landscape"
             android:label="@string/title_activity_main" >
             <intent-filter>
@@ -30,6 +30,7 @@
         <activity android:label="History" android:name="curt.android.history.HistoryActivity"></activity>
         <activity android:label="Share" android:name="curt.android.share.ShareActivity"></activity>
         <activity android:name="PartResult" android:theme="@style/AppTheme" uiOptions="splitActionBarWhenNarrow"></activity>
+        <activity android:label="@string/app_name" android:launchMode="singleTop" android:name="com.curt.parts.NoResults" android:theme="@style/AppTheme" uiOptions="splitActionBarWhenNarrow"></activity>
     </application>
 
 </manifest>

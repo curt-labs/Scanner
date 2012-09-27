@@ -2,7 +2,6 @@ package com.curt.vehicle;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -13,12 +12,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
-import com.curt.parts.Part;
 import com.curt.utils.Utils;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 public class VinDecoder {
 
@@ -50,30 +45,48 @@ public class VinDecoder {
 	}
 	
 	
-	public Vehicle Decode(){
+	public Vehicle Decode() throws Exception{
 		Vehicle v = new Vehicle();
 		
 		//TODO Hit CURT API to get the details
-		String url = "https://api.curtmfg.com/v3/vin/decode/" + this.getVin() +
+		String url = "http://api.curtmfg.com/v3/vin/decode/" + this.getVin() +
 				"?key=" + this.api_key;
 		HttpClient client = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(url);
+		httpGet.setHeader("Content-Type", "application/json");
 		try{
+			
 			HttpResponse resp = client.execute(httpGet);
 			HttpEntity entity = resp.getEntity();
 			
 			if(entity != null){
 				InputStream stream = entity.getContent();
 				String respString = Utils.convertStreamToString(stream);
-				
 				VinDecoder.DataWrapper wrap = new VinDecoder.DataWrapper();
 				DecodedVin decoded = wrap.fromJson(respString);
-				//if(decoded.getStatus())
+				
+				String status = decoded.getStatus().toUpperCase();
+				if(status == "PARAMERR" || status == "VINERR" || status == "SECERR" || status == "CHECKERR"){
+					throw new Exception("Failed to process VIN");
+				}else if(status == "NOTFOUND"){
+					throw new Exception("We couldn't decode that VIN");
+				}else{ // Success
+					DecodedVin.Vehicle dv = decoded.getVehicle();
+					v.setYear(Double.parseDouble(dv.getYear()));
+					v.setMake(dv.getMake());
+					v.setModel(dv.getModel());
+					v.setStyle(dv.getTrim());
+				}
 			}
 		}catch(ClientProtocolException e){
 			e.printStackTrace();
+			throw new Exception("Failed to process VIN");
 		}catch(IOException e){
 			e.printStackTrace();
+			throw new Exception("Failed to process VIN");
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new Exception("Failed to process VIN");
 		}
 		
 		return v;
@@ -82,15 +95,16 @@ public class VinDecoder {
 	public static class DataWrapper {
 		public DecodedVin fromJson(String json){
 			Gson gson = new Gson();
-			JsonParser parser = new JsonParser();
-			JsonArray array = parser.parse(json).getAsJsonArray();
-			
+			DecodeHandler handler = new DecodeHandler();
 			DecodedVin decoded = new DecodedVin();
-			decoded = gson.fromJson(json, DecodedVin.class);
-
+			
+			handler = gson.fromJson(json, DecodeHandler.class);
+			decoded = handler.decode;
+			
 			return decoded;
 		}
 		
 	}
+	
 	
 }

@@ -19,6 +19,7 @@ package com.curt.scanner;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,6 +52,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.Log;
@@ -187,6 +189,11 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback, S
 
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
+    if(android.os.Build.VERSION.SDK_INT > 9){
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
+	}
+    
     //showHelpOnFirstLaunch();
   }
 
@@ -584,7 +591,6 @@ public void onSensorChanged(SensorEvent evt){
 	if(first == 'I'){
 		code = rawResult.getText().substring(1);
 	}
-	Log.e("Code", code);
 	  
 	  
     statusView.setVisibility(View.GONE);
@@ -652,14 +658,26 @@ public void onSensorChanged(SensorEvent evt){
 	    clipboard.setText(displayContents);
 	  }
     
-    decoder = new VinDecoder();
+    decoder = new VinDecoder(displayContents);
+    Vehicle vehicle = new Vehicle();
+	try {
+		vehicle = decoder.Decode();
+		
+		Intent intent = new Intent(this,PartResult.class);
+	    intent.putExtra("year", vehicle.getYear());
+	    intent.putExtra("make", vehicle.getMake());
+	    intent.putExtra("model", vehicle.getModel());
+	    intent.putExtra("style", vehicle.getStyle());
+	    startActivity(intent);
+	} catch (Exception e) {
+		e.printStackTrace();
+		Toast.makeText(getApplicationContext(), e.getMessage() + " " + displayContents, Toast.LENGTH_LONG).show();
+		
+		Intent intent = new Intent(this,Scanner.class);
+		startActivity(intent);
+	}
     
-    Intent intent = new Intent(this,PartResult.class);
-    intent.putExtra("year", Double.parseDouble("2006"));
-    intent.putExtra("make", "Pontiac");
-    intent.putExtra("model", "G6");
-    intent.putExtra("style", "Sedan");
-    startActivity(intent);
+    
     
     /*supplementTextView.setOnClickListener(null);
     if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
@@ -871,54 +889,4 @@ public void onSensorChanged(SensorEvent evt){
     viewfinderView.drawViewfinder();
   }
 
-  
-  public class GetPartsAsync extends AsyncTask<Void, View, View>{
-
-	@Override
-	protected View doInBackground(Void...params) {
-		
-		Vehicle vehicle = new Vehicle();
-		vehicle.setYear(2006);
-		vehicle.setMake("Pontiac");
-		vehicle.setModel("G6");
-		vehicle.setStyle("Sedan");
-		
-		TextView supplementTextView = (TextView) findViewById(R.id.contents_supplement_text_view);
-	    supplementTextView.setText("Vehicle discovered as: " + vehicle.getYear() + " " + vehicle.getMake() + " " + vehicle.getModel() + " " + vehicle.getStyle());
-		
-	    ArrayList<Part> parts = vehicle.GetParts();
-	    Iterator<Part> i = parts.iterator();
-	    HorizontalScrollView view = new HorizontalScrollView(getApplicationContext());
-	    LinearLayout linear = new LinearLayout(getApplicationContext());
-	    //HorizontalScrollView view = (HorizontalScrollView) findViewById(R.id.part_list);
-	    while(i.hasNext()){
-	    	Part part = i.next();
-	    	if(part.images.size() > 0){
-	    		ImageView img = new ImageView(getApplicationContext());
-	    		Uri uri = Uri.parse(part.images.get(0).path);
-		    	img.setImageURI(uri);
-		    	linear.addView(img);
-	    	}else{
-	    		TextView txt = new TextView(getApplicationContext());
-	    		txt.setText(part.shortDesc);
-	    		view.addView(txt);
-	    	}
-	    }
-	    
-	    view.addView(linear);
-	    return view;
-	}
-	
-	protected void onPostExecute(View viewList){
-		
-		if(viewList != null){
-			LinearLayout view = (LinearLayout)findViewById(R.id.result_view);
-			view.removeAllViewsInLayout();
-			view.addView(viewList);
-		}
-	}
-	
-  }
-  
-  
 }

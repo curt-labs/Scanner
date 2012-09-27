@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -22,6 +23,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,10 +33,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.curt.images.ImageHelper;
+import com.curt.parts.NoResults;
 import com.curt.parts.Part;
 import com.curt.parts.PartAttribute;
 import com.curt.parts.PartImage;
@@ -56,7 +60,7 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pager_main);
 		
-		if(parts == null){
+		/*if(parts == null){
 			Bundle extras = getIntent().getExtras();
 			this.year = extras.getDouble("year");
 			this.make = extras.getString("make");
@@ -77,7 +81,7 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 			viewPager = (ViewPager)findViewById(R.id.pager);
 			viewPager.setAdapter(pagerAdapter);
 			viewPager.setCurrentItem(0);
-		}
+		}*/
 	}
 	
 	@Override
@@ -279,17 +283,30 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 
 			Vehicle vehicle = params[0];
 
-			return vehicle.GetParts();
+			try{
+				return vehicle.GetParts();
+			}catch(UnknownHostException e){
+				Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
+			}catch(Exception e){
+				Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
+			}
+			return null;
 		}
 
 		protected void onPostExecute(ArrayList<Part> parts) {
 			try{
-				pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
-				pagerAdapter.parts = parts;
-				
-				viewPager = (ViewPager)findViewById(R.id.pager);
-				viewPager.setAdapter(pagerAdapter);
-				viewPager.setCurrentItem(0);
+				if(parts == null || parts.size() == 0){
+					Toast.makeText(getApplicationContext(), "No parts found", Toast.LENGTH_LONG).show();
+					Intent intent = new Intent(getApplicationContext(), Scanner.class);
+					startActivity(intent);
+				}else{
+					pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
+					pagerAdapter.parts = parts;
+					
+					viewPager = (ViewPager)findViewById(R.id.pager);
+					viewPager.setAdapter(pagerAdapter);
+					viewPager.setCurrentItem(0);
+				}
 			}catch(Exception e){
 				e.printStackTrace();
 				Bundle bundle = getIntent().getExtras();
@@ -323,9 +340,9 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 			try {
 				return download_image(url);
 			} catch (MalformedURLException e) {
-				Log.e("ImageLoader", "Could not load Bitmap from: " + url);
+				e.printStackTrace();
 			} catch (IOException e) {
-				Log.e("ImageLoader", "Could not load Bitmap from: " + url);
+				e.printStackTrace();
 			}
 			return null;
 		}

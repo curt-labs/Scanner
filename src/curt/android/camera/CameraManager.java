@@ -281,7 +281,6 @@ public final class CameraManager {
 				  camera.setDisplayOrientation(0);
 				  break;
 			  case 8: // reverse land
-				  Log.e("Orient", "throwing reverse land");
 				  camera.setDisplayOrientation(180);
 				  break;
 	
