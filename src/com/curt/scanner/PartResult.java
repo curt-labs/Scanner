@@ -52,37 +52,17 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.pager_main);
-		if(vinResponse == null){
-			Bundle extras = getIntent().getExtras();
-			VinDecoder.DataWrapper vinWrap = new VinDecoder.DataWrapper();
-			String json = extras.getString("vin_response");
-			vinResponse = vinWrap.fromJson(json);
-			if(vinResponse == null || vinResponse.Parts == null || vinResponse.Parts.size() == 0){
-				Intent intent = new Intent(getApplicationContext(), Scanner.class);
-				startActivity(intent);
-			}else{
-				pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
-				pagerAdapter.parts = vinResponse.Parts;
-				
-				viewPager = (ViewPager)findViewById(R.id.pager);
-				viewPager.setAdapter(pagerAdapter);
-				viewPager.setCurrentItem(0);
-			}
-		}else{
-			
-			pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
-			pagerAdapter.parts = vinResponse.Parts;
-			
-			viewPager = (ViewPager)findViewById(R.id.pager);
-			viewPager.setAdapter(pagerAdapter);
-			viewPager.setCurrentItem(0);
-		}
+		LoadResults();
 		super.onCreate(savedInstanceState);
 	}
 	
 	@Override
 	public void onResume(){
-		
+		LoadResults();
+		super.onResume();
+	}
+	
+	public void LoadResults(){
 		if(vinResponse == null){
 			Bundle extras = getIntent().getExtras();
 			VinDecoder.DataWrapper vinWrap = new VinDecoder.DataWrapper();
@@ -108,8 +88,6 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 			viewPager.setAdapter(pagerAdapter);
 			viewPager.setCurrentItem(0);
 		}
-		
-		super.onResume();
 	}
 	
 	@Override
