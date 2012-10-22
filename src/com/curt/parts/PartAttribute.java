@@ -2,18 +2,18 @@ package com.curt.parts;
 
 public class PartAttribute {
 
-	public String key = "";
+	public String Key = "";
 	/**
 	 * @return the key
 	 */
 	public String getKey() {
-		return key;
+		return Key;
 	}
 	/**
 	 * @param key the key to set
 	 */
 	public void setKey(String key) {
-		this.key = key;
+		this.Key = key;
 	}
 	
 	
@@ -21,14 +21,13 @@ public class PartAttribute {
 	 * @return the value
 	 */
 	public String getValue() {
-		return value;
+		return Value;
 	}
 	/**
 	 * @param value the value to set
 	 */
 	public void setValue(String value) {
-		this.value = value;
+		this.Value = value;
 	}
-	public String value = "";
-	
+	public String Value = "";
 }

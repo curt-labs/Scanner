@@ -201,7 +201,6 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 				return layout;
 			}
 			
-			
 			TextView title = (TextView)layout.findViewById(R.id.partResultDesc);
 			title.setText(part.ShortDesc);
 			if (part.Images.size() > 0) {
@@ -237,8 +236,8 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 				Iterator<PartAttribute> conIter = part.Content.iterator();
 				while(conIter.hasNext() && installSheet == null){
 					PartAttribute content = conIter.next();
-					if(content.key.toUpperCase() == "INSTALLATIONSHEET"){
-						installSheet = content.value;
+					if(content.Key.toUpperCase() == "INSTALLATIONSHEET"){
+						installSheet = content.Value;
 						break;
 					}
 				}
@@ -252,55 +251,6 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 			return layout;
 		}
 	}
-
-	/*public class GetPartsAsync extends
-			AsyncTask<String, Void, ArrayList<Part>> {
-
-		@Override
-		protected ArrayList<Part> doInBackground(String... params) {
-
-			String vin = params[0];
-			VinDecoder decoder = new VinDecoder(vin);
-			try{
-				DecodeResponse resp = decoder.Decode();
-				if(resp == null || resp.Parts == null || resp.Parts.size() == 0){
-					Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
-					return null;
-				}
-				return resp.Parts;
-			}catch(UnknownHostException e){
-				Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
-			}catch(Exception e){
-				Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
-			}
-			return null;
-		}
-
-		protected void onPostExecute(ArrayList<Part> parts) {
-			try{
-				if(parts == null || parts.size() == 0){
-					Toast.makeText(getApplicationContext(), "No parts found", Toast.LENGTH_LONG).show();
-					Intent intent = new Intent(getApplicationContext(), Scanner.class);
-					startActivity(intent);
-				}else{
-					pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
-					pagerAdapter.parts = parts;
-					
-					viewPager = (ViewPager)findViewById(R.id.pager);
-					viewPager.setAdapter(pagerAdapter);
-					viewPager.setCurrentItem(0);
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-				Bundle bundle = getIntent().getExtras();
-				Bundle extras = getIntent().getExtras();
-				
-				
-				//new GetPartsAsync().execute(vehicle, null, null);
-			}
-		}
-
-	}*/
 
 	public static class DownloadImagesAsync extends
 			AsyncTask<ImageView, Void, Bitmap> {
