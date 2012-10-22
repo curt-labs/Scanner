@@ -1,95 +1,83 @@
 package com.curt.parts;
 
 public class PartImage {
-	public int imageID = 0;
-    public String size = "";
-    /**
-	 * @return the imageID
-	 */
-	public int getImageID() {
-		return imageID;
-	}
+    
 	/**
-	 * @param imageID the imageID to set
-	 */
-	public void setImageID(int imageID) {
-		this.imageID = imageID;
-	}
-	/**
-	 * @return the size
+	 * @return the Size
 	 */
 	public String getSize() {
-		return size;
+		return Size;
 	}
 	/**
-	 * @param size the size to set
+	 * @param Size the Size to set
 	 */
-	public void setSize(String size) {
-		this.size = size;
+	public void setSize(String Size) {
+		this.Size = Size;
 	}
 	/**
-	 * @return the path
+	 * @return the Path
 	 */
 	public String getPath() {
-		return path;
+		return Path;
 	}
 	/**
-	 * @param path the path to set
+	 * @param Path the Path to set
 	 */
-	public void setPath(String path) {
-		this.path = path;
+	public void setPath(String Path) {
+		this.Path = Path;
 	}
 	/**
-	 * @return the height
+	 * @return the Height
 	 */
 	public int getHeight() {
-		return height;
+		return Height;
 	}
 	/**
-	 * @param height the height to set
+	 * @param Height the Height to set
 	 */
-	public void setHeight(int height) {
-		this.height = height;
+	public void setHeight(int Height) {
+		this.Height = Height;
 	}
 	/**
-	 * @return the width
+	 * @return the Width
 	 */
 	public int getWidth() {
-		return width;
+		return Width;
 	}
 	/**
-	 * @param width the width to set
+	 * @param Width the Width to set
 	 */
-	public void setWidth(int width) {
-		this.width = width;
+	public void setWidth(int Width) {
+		this.Width = Width;
 	}
 	/**
-	 * @return the partID
+	 * @return the PartId
 	 */
 	public int getPartID() {
-		return partID;
+		return PartId;
 	}
 	/**
-	 * @param partID the partID to set
+	 * @param PartId the PartId to set
 	 */
-	public void setPartID(int partID) {
-		this.partID = partID;
+	public void setPartID(int PartId) {
+		this.PartId = PartId;
 	}
 	/**
-	 * @return the sort
+	 * @return the Sort
 	 */
 	public char getSort() {
-		return sort;
+		return Sort;
 	}
 	/**
-	 * @param sort the sort to set
+	 * @param Sort the Sort to set
 	 */
-	public void setSort(char sort) {
-		this.sort = sort;
+	public void setSort(char Sort) {
+		this.Sort = Sort;
 	}
-	public String path = "";
-    public int height = 0;
-    public int width = 0;
-    public int partID = 0;
-    public char sort;
+	public String Path = "";
+	public String Size = "";
+    public int Height = 0;
+    public int Width = 0;
+    public int PartId = 0;
+    public char Sort;
 }

@@ -23,7 +23,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,77 +32,77 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RadioGroup.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.curt.images.ImageHelper;
-import com.curt.parts.NoResults;
 import com.curt.parts.Part;
 import com.curt.parts.PartAttribute;
 import com.curt.parts.PartImage;
-import com.curt.vehicle.Vehicle;
+import com.curt.vehicle.DecodeResponse;
+import com.curt.vehicle.VinDecoder;
 
 public class PartResult extends FragmentActivity implements OnClickListener {
 
 	public CollectionPagerAdapter pagerAdapter;
 	public FragmentManager fManager;
 	public ViewPager viewPager;
-	public static ArrayList<Part> parts;
-	
-	public double year;
-	public String make;
-	public String model;
-	public String style;
+	//public static ArrayList<Part> parts;
+	public DecodeResponse vinResponse;
 
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pager_main);
-		
-		/*if(parts == null){
+		if(vinResponse == null){
 			Bundle extras = getIntent().getExtras();
-			this.year = extras.getDouble("year");
-			this.make = extras.getString("make");
-			this.model = extras.getString("model");
-			this.style = extras.getString("style");
-			
-			Vehicle vehicle = new Vehicle();
-			vehicle.setYear(this.year);
-			vehicle.setMake(this.make);
-			vehicle.setModel(this.model);
-			vehicle.setStyle(this.style);
-			
-			new GetPartsAsync().execute(vehicle, null, null);
+			VinDecoder.DataWrapper vinWrap = new VinDecoder.DataWrapper();
+			String json = extras.getString("vin_response");
+			vinResponse = vinWrap.fromJson(json);
+			if(vinResponse == null || vinResponse.Parts == null || vinResponse.Parts.size() == 0){
+				Intent intent = new Intent(getApplicationContext(), Scanner.class);
+				startActivity(intent);
+			}else{
+				pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
+				pagerAdapter.parts = vinResponse.Parts;
+				
+				viewPager = (ViewPager)findViewById(R.id.pager);
+				viewPager.setAdapter(pagerAdapter);
+				viewPager.setCurrentItem(0);
+			}
 		}else{
+			
 			pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
-			pagerAdapter.parts = parts;
+			pagerAdapter.parts = vinResponse.Parts;
 			
 			viewPager = (ViewPager)findViewById(R.id.pager);
 			viewPager.setAdapter(pagerAdapter);
 			viewPager.setCurrentItem(0);
-		}*/
+		}
+		super.onCreate(savedInstanceState);
 	}
 	
 	@Override
 	public void onResume(){
 		
-		if(parts == null){
+		if(vinResponse == null){
 			Bundle extras = getIntent().getExtras();
-			this.year = extras.getDouble("year");
-			this.make = extras.getString("make");
-			this.model = extras.getString("model");
-			this.style = extras.getString("style");
-			
-			Vehicle vehicle = new Vehicle();
-			vehicle.setYear(this.year);
-			vehicle.setMake(this.make);
-			vehicle.setModel(this.model);
-			vehicle.setStyle(this.style);
-			
-			new GetPartsAsync().execute(vehicle, null, null);
+			VinDecoder.DataWrapper vinWrap = new VinDecoder.DataWrapper();
+			String json = extras.getString("vin_response");
+			vinResponse = vinWrap.fromJson(json);
+			if(vinResponse == null || vinResponse.Parts == null || vinResponse.Parts.size() == 0){
+				Intent intent = new Intent(getApplicationContext(), Scanner.class);
+				startActivity(intent);
+			}else{
+				pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
+				pagerAdapter.parts = vinResponse.Parts;
+				
+				viewPager = (ViewPager)findViewById(R.id.pager);
+				viewPager.setAdapter(pagerAdapter);
+				viewPager.setCurrentItem(0);
+			}
 		}else{
+			
 			pagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());
-			pagerAdapter.parts = parts;
+			pagerAdapter.parts = vinResponse.Parts;
 			
 			viewPager = (ViewPager)findViewById(R.id.pager);
 			viewPager.setAdapter(pagerAdapter);
@@ -142,18 +141,13 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 		
 
 		MenuItem vehicle = menu.findItem(R.id.vehicle);
-		vehicle.setTitle(this.year + " " + this.make + " " + this.model + " "
-				+ this.style);
+		vehicle.setTitle(vinResponse.GetYear() + " " + vinResponse.GetMake() + " " + vinResponse.GetModel() + " " + vinResponse.GetTrim());
 		vehicle.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				Intent intent = new Intent(getApplicationContext(),
 						PartResult.class);
-				intent.putExtra("year", year);
-				intent.putExtra("make", make);
-				intent.putExtra("model", model);
-				intent.putExtra("style", style);
 				startActivity(intent);
 				return false;
 			}
@@ -195,13 +189,16 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 		
 		@Override
 		public int getCount(){
+			if(parts == null){
+				return 0;
+			}
 			return parts.size();
 		}
 		
 		@Override
 		public CharSequence getPageTitle(int pos){
 			Part part = parts.get(pos);
-			return "CURT #" + part.partID;
+			return "CURT #" + part.PartId;
 		}
 		
 	}
@@ -228,20 +225,20 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 			
 			
 			TextView title = (TextView)layout.findViewById(R.id.partResultDesc);
-			title.setText(part.shortDesc);
-			if (part.images.size() > 0) {
+			title.setText(part.ShortDesc);
+			if (part.Images.size() > 0) {
 				ImageView img = (ImageView)layout.findViewById(R.id.partResultImage);
 
-				Iterator<PartImage> imgIter = part.images.iterator();
+				Iterator<PartImage> imgIter = part.Images.iterator();
 				String imgPath = null;
 				while(imgIter.hasNext() && imgPath == null ){
 					PartImage pImg = imgIter.next();
-					if(pImg.sort == 'a' && pImg.width == 300){
-						imgPath = pImg.path;
+					if(pImg.Sort == 'a' && pImg.Width == 300){
+						imgPath = pImg.Path;
 					}
 				}
 				if(imgPath == null){
-					imgPath = part.images.get(0).path;
+					imgPath = part.Images.get(0).Path;
 				}
 				
 				img.setTag(imgPath);
@@ -257,34 +254,42 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 			
 			String installSheet = null;
 			TextView pdfButton = (TextView)layout.findViewById(R.id.pdf_button);
-			pdfButton.setVisibility(View.INVISIBLE);
-			Iterator<PartAttribute> conIter = part.content.iterator();
-			while(conIter.hasNext() && installSheet == null){
-				PartAttribute content = conIter.next();
-				if(content.key.toUpperCase() == "INSTALLATIONSHEET"){
-					installSheet = content.value;
-					break;
+			if(pdfButton != null){
+				pdfButton.setVisibility(View.INVISIBLE);
+				Iterator<PartAttribute> conIter = part.Content.iterator();
+				while(conIter.hasNext() && installSheet == null){
+					PartAttribute content = conIter.next();
+					if(content.key.toUpperCase() == "INSTALLATIONSHEET"){
+						installSheet = content.value;
+						break;
+					}
+				}
+				if(installSheet != null){
+					pdfButton.setTag(installSheet);
+					pdfButton.setVisibility(View.VISIBLE);
 				}
 			}
-			if(installSheet != null){
-				pdfButton.setTag(installSheet);
-				pdfButton.setVisibility(View.VISIBLE);
-			}
+			
 			
 			return layout;
 		}
 	}
 
-	public class GetPartsAsync extends
-			AsyncTask<Vehicle, Void, ArrayList<Part>> {
+	/*public class GetPartsAsync extends
+			AsyncTask<String, Void, ArrayList<Part>> {
 
 		@Override
-		protected ArrayList<Part> doInBackground(Vehicle... params) {
+		protected ArrayList<Part> doInBackground(String... params) {
 
-			Vehicle vehicle = params[0];
-
+			String vin = params[0];
+			VinDecoder decoder = new VinDecoder(vin);
 			try{
-				return vehicle.GetParts();
+				DecodeResponse resp = decoder.Decode();
+				if(resp == null || resp.Parts == null || resp.Parts.size() == 0){
+					Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
+					return null;
+				}
+				return resp.Parts;
 			}catch(UnknownHostException e){
 				Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
 			}catch(Exception e){
@@ -311,22 +316,13 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 				e.printStackTrace();
 				Bundle bundle = getIntent().getExtras();
 				Bundle extras = getIntent().getExtras();
-				double year = extras.getDouble("year");
-				String make = extras.getString("make");
-				String model = extras.getString("model");
-				String style = extras.getString("style");
 				
-				Vehicle vehicle = new Vehicle();
-				vehicle.setYear(year);
-				vehicle.setMake(make);
-				vehicle.setModel(model);
-				vehicle.setStyle(style);
 				
-				new GetPartsAsync().execute(vehicle, null, null);
+				//new GetPartsAsync().execute(vehicle, null, null);
 			}
 		}
 
-	}
+	}*/
 
 	public static class DownloadImagesAsync extends
 			AsyncTask<ImageView, Void, Bitmap> {
@@ -337,6 +333,7 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 		protected Bitmap doInBackground(ImageView... imageViews) {
 			this.imageView = imageViews[0];
 			String url = (String) imageView.getTag();
+			Log.e("ImageURL", url);
 			try {
 				return download_image(url);
 			} catch (MalformedURLException e) {
@@ -356,6 +353,7 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 		}
 
 		private Bitmap download_image(String u) throws IOException {
+			Log.e("Image URL", u);
 			URL url = new URL(u);
 			URLConnection conn = url.openConnection();
 			conn.setUseCaches(true);

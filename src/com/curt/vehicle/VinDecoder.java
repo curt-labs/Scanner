@@ -10,8 +10,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.util.Log;
-
 import com.curt.utils.Utils;
 import com.google.gson.Gson;
 
@@ -45,10 +43,8 @@ public class VinDecoder {
 	}
 	
 	
-	public Vehicle Decode() throws Exception{
-		Vehicle v = new Vehicle();
+	public DecodeResponse Decode() throws Exception{
 		
-		//TODO Hit CURT API to get the details
 		String url = "http://api.curtmfg.com/v3/vin/decode/" + this.getVin() +
 				"?key=" + this.api_key;
 		HttpClient client = new DefaultHttpClient();
@@ -63,20 +59,13 @@ public class VinDecoder {
 				InputStream stream = entity.getContent();
 				String respString = Utils.convertStreamToString(stream);
 				VinDecoder.DataWrapper wrap = new VinDecoder.DataWrapper();
-				DecodedVin decoded = wrap.fromJson(respString);
+				DecodeResponse decoded = wrap.fromJson(respString);
 				
-				String status = decoded.getStatus().toUpperCase();
-				if(status == "PARAMERR" || status == "VINERR" || status == "SECERR" || status == "CHECKERR"){
-					throw new Exception("Failed to process VIN");
-				}else if(status == "NOTFOUND"){
-					throw new Exception("We couldn't decode that VIN");
-				}else{ // Success
-					DecodedVin.Vehicle dv = decoded.getVehicle();
-					v.setYear(Double.parseDouble(dv.getYear()));
-					v.setMake(dv.getMake());
-					v.setModel(dv.getModel());
-					v.setStyle(dv.getTrim());
+				if(decoded.Error != null && decoded.Error.length() > 0){
+					throw new Exception("Failed to process VIN:" + decoded.Vin);
 				}
+				return decoded;
+				
 			}
 		}catch(ClientProtocolException e){
 			e.printStackTrace();
@@ -89,22 +78,29 @@ public class VinDecoder {
 			throw new Exception("Failed to process VIN");
 		}
 		
-		return v;
+		return new DecodeResponse();
+	}
+	
+	public String Encode(DecodeResponse resp) throws Exception{
+		try{
+			VinDecoder.DataWrapper wrap = new VinDecoder.DataWrapper();
+			return wrap.toJson(resp);
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new Exception("Failed to encode Part array");
+		}
 	}
 	
 	public static class DataWrapper {
-		public DecodedVin fromJson(String json){
+		public DecodeResponse fromJson(String json){
 			Gson gson = new Gson();
-			DecodeHandler handler = new DecodeHandler();
-			DecodedVin decoded = new DecodedVin();
 			
-			handler = gson.fromJson(json, DecodeHandler.class);
-			decoded = handler.decode;
-			
-			return decoded;
+			return gson.fromJson(json, DecodeResponse.class);
 		}
 		
+		public String toJson(DecodeResponse resp){
+			Gson gson = new Gson();
+			return gson.toJson(resp);
+		}
 	}
-	
-	
 }

@@ -21,11 +21,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,14 +65,11 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.curt.parts.Part;
-import com.curt.vehicle.Vehicle;
+import com.curt.vehicle.DecodeResponse;
 import com.curt.vehicle.VinDecoder;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -586,11 +581,11 @@ public void onSensorChanged(SensorEvent evt){
   private void handleDecodeInternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
 	
 	// We need to pull out the I at the beginning of the code
-	char first = rawResult.getText().charAt(0);
-	String code = rawResult.getText();
+	//char first = rawResult.getText().charAt(0);
+	/*String code = rawResult.getText();
 	if(first == 'I'){
 		code = rawResult.getText().substring(1);
-	}
+	}*/
 	  
 	  
     statusView.setVisibility(View.GONE);
@@ -645,68 +640,58 @@ public void onSensorChanged(SensorEvent evt){
     }
     
     contentsTextView.setText(displayContents);
-    // Crudely scale betweeen 22 and 32 -- bigger font for shorter text
+    // Crudely scale between 22 and 32 -- bigger font for shorter text
     int scaledSize = Math.max(22, 32 - displayContents.length() / 4);
     contentsTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);
 
     TextView supplementTextView = (TextView) findViewById(R.id.contents_supplement_text_view);
     supplementTextView.setText("Allow Alfred to decode that garbage for you...");
-    //new GetPartsAsync().execute(null,null,null);
     
-    if (copyToClipboard && !resultHandler.areContentsSecure()) {
-	    ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-	    clipboard.setText(displayContents);
-	  }
-    
-    decoder = new VinDecoder(displayContents);
-    Vehicle vehicle = new Vehicle();
-	try {
-		vehicle = decoder.Decode();
-		
-		Intent intent = new Intent(this,PartResult.class);
-	    intent.putExtra("year", vehicle.getYear());
-	    intent.putExtra("make", vehicle.getMake());
-	    intent.putExtra("model", vehicle.getModel());
-	    intent.putExtra("style", vehicle.getStyle());
-	    startActivity(intent);
-	} catch (Exception e) {
-		e.printStackTrace();
-		Toast.makeText(getApplicationContext(), e.getMessage() + " " + displayContents, Toast.LENGTH_LONG).show();
-		
-		Intent intent = new Intent(this,Scanner.class);
-		startActivity(intent);
-	}
-    
-    
-    
-    /*supplementTextView.setOnClickListener(null);
-    if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-        PreferencesActivity.KEY_SUPPLEMENTAL, true)) {
-      SupplementalInfoRetriever.maybeInvokeRetrieval(supplementTextView,
-                                                     resultHandler.getResult(),
-                                                     handler,
-                                                     historyManager,
-                                                     this);
-    }
-
-    int buttonCount = resultHandler.getButtonCount();
-    ViewGroup buttonView = (ViewGroup) findViewById(R.id.result_button_view);
-    buttonView.requestFocus();
-    for (int x = 0; x < ResultHandler.MAX_BUTTON_COUNT; x++) {
-      TextView button = (TextView) buttonView.getChildAt(x);
-      if (x < buttonCount) {
-        button.setVisibility(View.VISIBLE);
-        button.setText(resultHandler.getButtonText(x));
-        button.setOnClickListener(new ResultButtonListener(resultHandler, x));
-      } else {
-        button.setVisibility(View.GONE);
-      }
-    }
-    buttonView.setVisibility(View.VISIBLE);*/
-
+    new GetPartsAsync().execute(displayContents,null,null);
     
   }
 
+  public class GetPartsAsync extends
+	AsyncTask<String, Void, DecodeResponse> {
+
+		@Override
+		protected DecodeResponse doInBackground(String... params) {
+		
+			String vin = params[0];
+			VinDecoder decoder = new VinDecoder(vin);
+			try{
+				return decoder.Decode();
+				
+			}catch(UnknownHostException e){
+				Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
+			}catch(Exception e){
+				Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
+			}
+			return null;
+		}
+		
+		protected void onPostExecute(DecodeResponse resp) {
+			try{
+				if(resp != null && resp.Parts == null || resp.Parts.size() == 0){
+					Toast.makeText(getApplicationContext(), "No parts found", Toast.LENGTH_LONG).show();
+					Intent intent = new Intent(getApplicationContext(), Scanner.class);
+					startActivity(intent);
+				}else{
+					Intent intent = new Intent(getApplicationContext(), PartResult.class);
+					intent.putExtra("vin_response", new VinDecoder().Encode(resp));
+					startActivity(intent);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+				Toast.makeText(getApplicationContext(), "No parts found", Toast.LENGTH_LONG).show();
+				Intent intent = new Intent(getApplicationContext(), Scanner.class);
+				startActivity(intent);
+			}
+		}
+
+  }
+  
+  
   // Briefly show the contents of the barcode, then handle the result outside Barcode Scanner.
   private void handleDecodeExternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
 

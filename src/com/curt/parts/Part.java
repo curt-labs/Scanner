@@ -2,8 +2,7 @@ package com.curt.parts;
 
 import java.util.ArrayList;
 
-import android.widget.RelativeLayout;
-
+import com.curt.category.Category;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -28,28 +27,28 @@ public class Part {
 	}
 	
 
-	public ArrayList<PartAttribute> attributes = new ArrayList<PartAttribute>();
-	public ArrayList<PartAttribute> content = new ArrayList<PartAttribute>();
-	public ArrayList<PartAttribute> vehicleattributes = new ArrayList<PartAttribute>();
-    public ArrayList<PartAttribute> pricing = new ArrayList<PartAttribute>();
-    public ArrayList<PartReview> reviews = new ArrayList<PartReview>();
-    public ArrayList<PartImage> images = new ArrayList<PartImage>();
-    public ArrayList<PartVideo> videos = new ArrayList<PartVideo>();
-    public int partID = 0;
-    public int custPartID = 0;
-    public int status = 0;
-    public String dateModified = "";
-    public String dateAdded = "";
-    public String shortDesc = "";
-    public String oldPartNumber = "";
-    public String listPrice = "";
-    public String pClass = "";
-    public int relatedCount = 0;
-    public int installTime = 0;
-    public double averageReview = 0;
-    public String drilling = "";
-    public String exposed = "";
-    public int vehicleID = 0;
-    public int priceCode = 0;
+	public ArrayList<PartAttribute> Attributes = new ArrayList<PartAttribute>();
+	public ArrayList<PartAttribute> VehicleAttributes = new ArrayList<PartAttribute>();
+	public ArrayList<PartAttribute> Content = new ArrayList<PartAttribute>();
+    public ArrayList<PartPrice> Pricing = new ArrayList<PartPrice>();
+    public ArrayList<PartReview> Reviews = new ArrayList<PartReview>();
+    public ArrayList<PartImage> Images = new ArrayList<PartImage>();
+    public ArrayList<PartVideo> Videos = new ArrayList<PartVideo>();
+    public ArrayList<Category> Categories = new ArrayList<Category>();
+    public ArrayList<Package> Packages = new ArrayList<Package>();
+    public int PartId = 0;
+    public int CustPartId = 0;
+    public int Status = 0;
+    public String DateModified = "";
+    public String DateAdded = "";
+    public String ShortDesc = "";
+    public String PartClass = "";
+    public int RelatedCount = 0;
+    public int InstallTime = 0;
+    public double AverageReview = 0;
+    public String Drilling = "";
+    public String Exposed = "";
+    public int VehicleId = 0;
+    public int PriceCode = 0;
 	
 }
