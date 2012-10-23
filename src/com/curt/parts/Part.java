@@ -1,6 +1,7 @@
 package com.curt.parts;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.curt.category.Category;
 import com.google.gson.Gson;
@@ -50,5 +51,23 @@ public class Part {
     public String Exposed = "";
     public int VehicleId = 0;
     public int PriceCode = 0;
+    
+	public String GenerateVideoUrl() {
+		
+		Iterator<PartVideo> vidIter = this.Videos.iterator();
+		while(vidIter.hasNext()){
+			PartVideo vid = vidIter.next();
+			if(vid.IsPrimary){
+				return vid.YouTubeVideoId;
+			}
+		}
+		vidIter = this.Videos.iterator();
+		while(vidIter.hasNext()){
+			PartVideo vid = vidIter.next();
+			return vid.YouTubeVideoId;
+		}
+		
+		return null;
+	}
 	
 }

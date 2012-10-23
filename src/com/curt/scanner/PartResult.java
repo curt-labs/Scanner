@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -14,6 +13,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +23,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,10 +33,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.curt.images.ImageHelper;
+import com.curt.parts.InstallSheetView;
 import com.curt.parts.Part;
 import com.curt.parts.PartAttribute;
 import com.curt.parts.PartImage;
@@ -94,13 +98,26 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 	public void onClick(View v){
 		if(v.getId() == R.id.pdf_button){
 			String sheet = (String)v.getTag();
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(Uri.parse(sheet), "application/pdf");
+			Intent intent = new Intent(getApplicationContext(), InstallSheetView.class);
+			intent.putExtra("url", sheet);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			try{
 				startActivity(intent);
 			}catch(ActivityNotFoundException e){
 				Toast.makeText(v.getContext(), "No Application Available to View PDF", Toast.LENGTH_SHORT).show();
+			}catch(Exception e){
+				e.printStackTrace();
+				Toast.makeText(v.getContext(), "Failed to load the install sheet", Toast.LENGTH_SHORT).show();
+			}
+		}else if(v.getId() == R.id.video_button){
+			String url = (String)v.getTag();
+			try{
+				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + url)));
+			}catch(ActivityNotFoundException e){
+				Toast.makeText(v.getContext(), "No Application Available to View Install Video", Toast.LENGTH_SHORT).show();
+			}catch(Exception e){
+				e.printStackTrace();
+				Toast.makeText(v.getContext(), "Failed to load the install video", Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -161,7 +178,7 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 		public Fragment getItem(int i){
 			PartObjectFragment frag = new PartObjectFragment();
 			frag.SetPart(parts.get(i));
-			
+
 			return frag;
 		}
 		
@@ -182,6 +199,7 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 	}
 	
 	public static class PartObjectFragment extends Fragment{
+
 		public static final String ARG_OBJECT = "part";
 		private Part part = null;
 		
@@ -196,6 +214,18 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedIntanceState){
+			/*PagerTitleStrip strip = (PagerTitleStrip)container.findViewById(R.id.pager_title_strip);
+			if(strip != null){
+				Category cat = part.Categories.get(0);
+				if(cat != null){
+					String hex = cat.ColorCode;
+					int first = Integer.parseInt(hex.substring(0,3));
+					int second = Integer.parseInt(hex.substring(3,6));
+					int third = Integer.parseInt(hex.substring(6,9));
+					
+					strip.setTextColor(Color.rgb(first,second,third));
+				}
+			}*/
 			View layout = inflater.inflate(R.layout.pager_collection_object, container,false);
 			if(part == null){
 				return layout;
@@ -229,14 +259,14 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 				imgLoader.execute(img);
 			}
 			
+			// Load the install sheet
 			String installSheet = null;
 			TextView pdfButton = (TextView)layout.findViewById(R.id.pdf_button);
 			if(pdfButton != null){
-				pdfButton.setVisibility(View.INVISIBLE);
 				Iterator<PartAttribute> conIter = part.Content.iterator();
 				while(conIter.hasNext() && installSheet == null){
 					PartAttribute content = conIter.next();
-					if(content.Key.toUpperCase() == "INSTALLATIONSHEET"){
+					if(content.Key.toUpperCase().equals("INSTALLATIONSHEET")){
 						installSheet = content.Value;
 						break;
 					}
@@ -244,6 +274,35 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 				if(installSheet != null){
 					pdfButton.setTag(installSheet);
 					pdfButton.setVisibility(View.VISIBLE);
+				}
+			}
+			
+			// Load the video
+			TextView videoButton = (TextView)layout.findViewById(R.id.video_button);
+			if(videoButton != null){
+				String vidUrl = part.GenerateVideoUrl();
+				if(vidUrl != null && vidUrl.length() > 0){
+					videoButton.setTag(vidUrl);
+					videoButton.setVisibility(View.VISIBLE);
+				}
+			}
+			
+			// Ok let's throw up some part attributes
+			Iterator<PartAttribute> attrIter = part.Attributes.iterator();
+			TableLayout table = (TableLayout)layout.findViewById(R.id.part_attribute_table);
+			if(table != null){
+				while(attrIter.hasNext()){
+					PartAttribute attr = attrIter.next();
+					TableRow row = new TableRow(layout.getContext());
+					TextView keyCell = new TextView(layout.getContext());
+					keyCell.setTypeface(null, Typeface.BOLD);
+					keyCell.setText(attr.Key);
+					TextView valCell = new TextView(layout.getContext());
+					valCell.setText(attr.Value);
+					valCell.setGravity(Gravity.RIGHT);
+					row.addView(keyCell);
+					row.addView(valCell);
+					table.addView(row);
 				}
 			}
 			

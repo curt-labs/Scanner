@@ -3,21 +3,30 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/partResultDesc"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp"
-        android:textSize="22dp"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="36dp"
+	    android:id="@+id/partResultDescContainer"
+        android:weightSum="1.0">
+        <TextView
+	        android:id="@+id/partResultDesc"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:textSize="20dp"
+	        android:gravity="center_horizontal"
+	        android:layout_weight="0.7"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/result_image_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/partResultDesc"
+        android:layout_below="@id/partResultDescContainer"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="39dp" >
         
@@ -39,7 +48,8 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/install_buttons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/result_image_container"
@@ -55,18 +65,71 @@
             android:gravity="center_vertical"
             android:padding="5dp"
             android:clickable="true"
+            android:onClick="onClick"
+            android:visibility="gone"
             android:text="@string/part_result_pdf" />
 
 		<TextView
 		    android:id="@+id/video_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/pdf_button"
             android:text="@string/part_result_video"
             android:gravity="center_vertical"
             android:clickable="true"
+            android:onClick="onClick"
+            android:visibility="gone"
             android:drawableLeft="@drawable/ic_action_slideshow"
             android:padding="5dp" />
 
-    </LinearLayout>
+    </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/part_attribute_table"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="false"
+        android:layout_below="@id/install_buttons"
+        android:layout_centerHorizontal="true" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/details_button"
+        android:layout_width="140dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/part_attribute_table"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onClick"
+        android:text="@string/details_button"
+        android:textColor="#e64d2c"
+        android:background="@drawable/details_button" />
     
 </RelativeLayout>

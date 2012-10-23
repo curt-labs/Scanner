@@ -1,82 +1,83 @@
 package com.curt.parts;
 
 public class PartVideo {
-	public int videoID = 0;
-    public String youTubeVideoID = "";
-    public boolean isPrimary = false;
-    public int typeID = 0;
-    public String type = "";
-    public String typeicon = "";
-	/**
-	 * @return the videoID
+	public int VideoId = 0;
+    /**
+	 * @return the videoId
 	 */
-	public int getVideoID() {
-		return videoID;
+	public int getVideoId() {
+		return VideoId;
 	}
 	/**
-	 * @param videoID the videoID to set
+	 * @param videoId the videoId to set
 	 */
-	public void setVideoID(int videoID) {
-		this.videoID = videoID;
+	public void setVideoId(int videoId) {
+		VideoId = videoId;
 	}
 	/**
-	 * @return the youTubeVideoID
+	 * @return the youTubeVideoId
 	 */
-	public String getYouTubeVideoID() {
-		return youTubeVideoID;
+	public String getYouTubeVideoId() {
+		return YouTubeVideoId;
 	}
 	/**
-	 * @param youTubeVideoID the youTubeVideoID to set
+	 * @param youTubeVideoId the youTubeVideoId to set
 	 */
-	public void setYouTubeVideoID(String youTubeVideoID) {
-		this.youTubeVideoID = youTubeVideoID;
+	public void setYouTubeVideoId(String youTubeVideoId) {
+		YouTubeVideoId = youTubeVideoId;
 	}
 	/**
 	 * @return the isPrimary
 	 */
-	public boolean isPrimary() {
-		return isPrimary;
+	public boolean isIsPrimary() {
+		return IsPrimary;
 	}
 	/**
 	 * @param isPrimary the isPrimary to set
 	 */
-	public void setPrimary(boolean isPrimary) {
-		this.isPrimary = isPrimary;
+	public void setIsPrimary(boolean isPrimary) {
+		IsPrimary = isPrimary;
 	}
 	/**
-	 * @return the typeID
+	 * @return the typeId
 	 */
-	public int getTypeID() {
-		return typeID;
+	public int getTypeId() {
+		return TypeId;
 	}
 	/**
-	 * @param typeID the typeID to set
+	 * @param typeId the typeId to set
 	 */
-	public void setTypeID(int typeID) {
-		this.typeID = typeID;
+	public void setTypeId(int typeId) {
+		TypeId = typeId;
 	}
 	/**
 	 * @return the type
 	 */
 	public String getType() {
-		return type;
+		return Type;
 	}
 	/**
 	 * @param type the type to set
 	 */
 	public void setType(String type) {
-		this.type = type;
+		Type = type;
 	}
 	/**
-	 * @return the typeicon
+	 * @return the typeIcon
 	 */
-	public String getTypeicon() {
-		return typeicon;
+	public String getTypeIcon() {
+		return TypeIcon;
 	}
 	/**
-	 * @param typeicon the typeicon to set
+	 * @param typeIcon the typeIcon to set
 	 */
-	public void setTypeicon(String typeicon) {
-		this.typeicon = typeicon;
+	public void setTypeIcon(String typeIcon) {
+		TypeIcon = typeIcon;
 	}
+	public String YouTubeVideoId = "";
+    public boolean IsPrimary = false;
+    public int TypeId = 0;
+    public String Type = "";
+    public String TypeIcon = "";
+	
 }
