@@ -119,6 +119,8 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 				e.printStackTrace();
 				Toast.makeText(v.getContext(), "Failed to load the install video", Toast.LENGTH_SHORT).show();
 			}
+		}else if(v.getId() == R.id.details_button){
+			Toast.makeText(v.getContext(), "Not implemented", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
