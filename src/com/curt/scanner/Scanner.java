@@ -188,6 +188,16 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback, S
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 	}
+    try{
+    	Bundle extras = getIntent().getExtras();
+    	int itemNumber = extras.getInt(Intents.History.ITEM_NUMBER, -1);
+	    if (itemNumber >= 0) {
+	      HistoryItem historyItem = historyManager.buildHistoryItem(itemNumber);
+	      decodeOrStoreSavedBitmap(null, historyItem.getResult());
+	    }
+    }catch(Exception e){
+    	e.printStackTrace();
+    }
     
     //showHelpOnFirstLaunch();
   }
@@ -663,9 +673,9 @@ public void onSensorChanged(SensorEvent evt){
 				return decoder.Decode();
 				
 			}catch(UnknownHostException e){
-				Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
+				//Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
 			}catch(Exception e){
-				Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
+				//Toast.makeText(getApplicationContext(), "Check your network connection and retry", Toast.LENGTH_LONG).show();
 			}
 			return null;
 		}
@@ -675,7 +685,8 @@ public void onSensorChanged(SensorEvent evt){
 				if(resp != null && resp.Parts == null || resp.Parts.size() == 0){
 					Toast.makeText(getApplicationContext(), "No parts found", Toast.LENGTH_LONG).show();
 					Intent intent = new Intent(getApplicationContext(), Scanner.class);
-					startActivity(intent);
+					setResult(Activity.RESULT_OK,intent);
+					finish();
 				}else{
 					Intent intent = new Intent(getApplicationContext(), PartResult.class);
 					intent.putExtra("vin_response", new VinDecoder().Encode(resp));

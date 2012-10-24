@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,8 +73,9 @@ public final class HistoryActivity extends ListActivity {
     if (adapter.getItem(position).getResult() != null) {
       Intent intent = new Intent(this, Scanner.class);
       intent.putExtra(Intents.History.ITEM_NUMBER, position);
-      setResult(Activity.RESULT_OK, intent);
-      finish();
+      startActivity(intent);
+      //setResult(Activity.RESULT_OK, intent);
+      //finish();
     }
   }
 
@@ -108,6 +110,7 @@ public final class HistoryActivity extends ListActivity {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+	  Log.e("History Iitem", Integer.toString(item.getItemId()));
     switch (item.getItemId()) {
       case SEND_ID:
         CharSequence history = historyManager.buildHistory();

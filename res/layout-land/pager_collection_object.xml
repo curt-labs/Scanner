@@ -1,37 +1,232 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/partResultItem"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:layout_weight="1.0">
 
-    <TextView
-        android:id="@+id/partResultDesc"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/title_container"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp"
-        android:textSize="22dp"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:padding="10dp"
+        android:layout_width="fill_parent">
+		
+        <TextView
+	        android:id="@+id/partResultDesc"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_marginTop="10dp"
+	        android:textSize="20dp"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+        
+        <!--TextView
+            android:id="@+id/pdf_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_action_attachment"
+            android:gravity="center_vertical|right"
+            android:padding="5dp"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:visibility="gone"
+            android:text="@string/part_result_pdf" />
 
-    <ProgressBar
-        android:id="@+id/image_loader"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="39dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:indeterminate="true" />
+		<TextView
+		    android:id="@+id/video_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/pdf_button"
+            android:text="@string/part_result_video"
+            android:gravity="center_vertical|right"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/ic_action_slideshow"
+            android:padding="5dp" /-->
+
+        <Button
+            android:id="@+id/details_button"
+            android:layout_width="160dp"
+            android:layout_height="38dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/details_button"
+            android:clickable="true"
+            android:gravity="center"
+            android:minHeight="@dimen/padding_large"
+            android:onClick="onClick"
+            android:padding="8dp"
+            android:text="@string/details_button"
+            android:textColor="#e64d2c" />
+
+    </RelativeLayout>
     
-    <ImageView
-        android:contentDescription="@string/part_image"
-        android:id="@+id/partResultImage"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_below="@id/title_container"
+        android:id="@+id/partImageContainer"
+        android:layout_height="175dp"
+        android:layout_width="175dp"
+        android:padding="10dp">
+        	<ProgressBar
+		        android:id="@+id/image_loader"
+		        style="?android:attr/progressBarStyle"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"
+		        android:layout_centerInParent="true"
+		        android:layout_gravity="center"
+		        android:indeterminate="true" />
+		    
+		    <ImageView
+		        android:id="@+id/partResultImage"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center_horizontal"
+		        android:visibility="gone"
+		        android:contentDescription="@string/part_image" />
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/part_attrs_container"
+        android:layout_toRightOf="@id/partImageContainer"
+        android:layout_below="@id/title_container"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/partResultDesc"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="39dp"
-        android:visibility="gone" />
-             
+        android:padding="10dp"
+        android:layout_width="wrap_content">
+        <TableLayout
+		        android:id="@+id/part_attribute_table"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:layout_gravity="center_horizontal" />
+    </RelativeLayout>
+    
 </RelativeLayout>
+
+<!--RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:id="@+id/result_view"
+    android:layout_height="wrap_content">
+    
+    <ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:id="@+id/result_scroller"
+	    android:scrollbars="none">
+		<RelativeLayout
+		    android:id="@+id/partResultItem"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content" >
+		
+		    <LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:gravity="center_horizontal"
+		        android:layout_alignParentTop="true"
+			    android:layout_centerHorizontal="true"
+			    android:layout_marginTop="10dp"
+			    android:id="@+id/partResultDescContainer"
+		        android:weightSum="1.0">
+		        <TextView
+			        android:id="@+id/partResultDesc"
+			        android:layout_width="0dp"
+			        android:layout_height="wrap_content"
+			        android:textSize="20dp"
+			        android:gravity="center_horizontal"
+			        android:layout_weight="0.7"
+			        android:textAppearance="?android:attr/textAppearanceLarge" />
+		    </LinearLayout>
+		
+		    <RelativeLayout
+		        android:id="@+id/result_image_container"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@id/partResultDescContainer"
+		        android:layout_centerHorizontal="true"
+		        android:layout_marginTop="19dp" >
+		        
+		        <ProgressBar
+			        android:id="@+id/image_loader"
+			        style="?android:attr/progressBarStyle"
+			        android:layout_width="50dp"
+			        android:layout_height="50dp"
+			        android:layout_gravity="center_vertical|center_horizontal"
+			        android:indeterminate="true" />
+			    
+			    <ImageView
+			        android:id="@+id/partResultImage"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_gravity="center"
+			        android:visibility="gone"
+			        android:contentDescription="@string/part_image" />
+		
+		    </RelativeLayout>
+		
+		    <RelativeLayout
+		        android:id="@+id/install_buttons"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@id/result_image_container"
+		        android:layout_marginTop="4dp"
+		        android:gravity="center_horizontal"
+		        android:layout_centerHorizontal="true" >
+		
+		        <TextView
+		            android:id="@+id/pdf_button"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableLeft="@drawable/ic_action_attachment"
+		            android:gravity="center_vertical"
+		            android:padding="5dp"
+		            android:clickable="true"
+		            android:onClick="onClick"
+		            android:visibility="gone"
+		            android:text="@string/part_result_pdf" />
+		
+				<TextView
+				    android:id="@+id/video_button"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_toRightOf="@id/pdf_button"
+		            android:text="@string/part_result_video"
+		            android:gravity="center_vertical"
+		            android:clickable="true"
+		            android:onClick="onClick"
+		            android:visibility="gone"
+		            android:drawableLeft="@drawable/ic_action_slideshow"
+		            android:padding="5dp" />
+		
+		    </RelativeLayout>
+		    
+			<TableLayout
+		        android:id="@+id/part_attribute_table"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:layout_below="@id/install_buttons"
+		        android:layout_gravity="center_horizontal" />
+		</RelativeLayout>
+	</ScrollView>
+	
+    <RelativeLayout 
+        android:id="@+id/details_button_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/details_button"
+            android:layout_width="160dp"
+            android:layout_height="38dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/details_button"
+            android:clickable="true"
+            android:minHeight="@dimen/padding_large"
+            android:onClick="onClick"
+            android:padding="8dp"
+            android:text="@string/details_button"
+            android:textColor="#e64d2c" />
+        
+    </RelativeLayout>
+</RelativeLayout-->
