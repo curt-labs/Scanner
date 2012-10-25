@@ -369,26 +369,21 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback, S
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    menu.add(Menu.NONE, SHARE_ID, Menu.NONE, R.string.menu_share)
-        .setIcon(android.R.drawable.ic_menu_share);
-    menu.add(Menu.NONE, HISTORY_ID, Menu.NONE, R.string.menu_history)
-        .setIcon(android.R.drawable.ic_menu_recent_history);
-    menu.add(Menu.NONE, SETTINGS_ID, Menu.NONE, R.string.menu_settings)
-        .setIcon(android.R.drawable.ic_menu_preferences);
-    menu.add(Menu.NONE, HELP_ID, Menu.NONE, R.string.menu_help)
-        .setIcon(android.R.drawable.ic_menu_help);
-    menu.add(Menu.NONE, ABOUT_ID, Menu.NONE, R.string.menu_about)
-        .setIcon(android.R.drawable.ic_menu_info_details);
+    //menu.add(Menu.NONE, SHARE_ID, Menu.NONE, R.string.menu_share).setIcon(android.R.drawable.ic_menu_share);
+    menu.add(Menu.NONE, HISTORY_ID, Menu.NONE, R.string.menu_history).setIcon(android.R.drawable.ic_menu_recent_history);
+    menu.add(Menu.NONE, SETTINGS_ID, Menu.NONE, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
+    menu.add(Menu.NONE, HELP_ID, Menu.NONE, R.string.menu_help).setIcon(android.R.drawable.ic_menu_help);
+    menu.add(Menu.NONE, ABOUT_ID, Menu.NONE, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
     return true;
   }
 
   // Don't display the share menu item if the result overlay is showing.
-  @Override
+  /*@Override
   public boolean onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
     menu.findItem(SHARE_ID).setVisible(lastResult == null);
     return true;
-  }
+  }*/
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
@@ -415,10 +410,7 @@ public final class Scanner extends Activity implements SurfaceHolder.Callback, S
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("CURT Laser");
         builder.setMessage("VIN Scanner built by CURT Manufacturing, LLC.\n\n Custom Development by Alex Ninneman");
-        builder.setIcon(R.drawable.icon);
-        /*
-        builder.setPositiveButton(R.string.button_open_browser, aboutListener);
-        builder.setNegativeButton(R.string.button_cancel, null);*/
+        builder.setIcon(R.drawable.ic_action);
         builder.show();
         break;
       default:

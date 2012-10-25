@@ -3,8 +3,4 @@
         android:id="@+id/vehicle"
         android:title="Vehicle"
         android:showAsAction="always" />
-    <item
-        android:id="@+id/scan"
-        android:title="Scan"
-        android:showAsAction="always" />
 </menu>

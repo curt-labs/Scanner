@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -22,7 +23,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,8 +46,20 @@ import com.curt.parts.PartImage;
 import com.curt.vehicle.DecodeResponse;
 import com.curt.vehicle.VinDecoder;
 
+import curt.android.history.HistoryActivity;
+import curt.android.share.ShareActivity;
+
 public class PartResult extends FragmentActivity implements OnClickListener {
 
+	private static final int SCAN_ID = Menu.FIRST;
+	private static final int SHARE_ID = Menu.FIRST + 1;
+    private static final int HISTORY_ID = Menu.FIRST + 2;
+    private static final int SETTINGS_ID = Menu.FIRST + 3;
+    private static final int HELP_ID = Menu.FIRST + 4;
+    private static final int ABOUT_ID = Menu.FIRST + 5;
+    
+    public static final int HISTORY_REQUEST_CODE = 0x0000bacc;
+	
 	public CollectionPagerAdapter pagerAdapter;
 	public FragmentManager fManager;
 	public ViewPager viewPager;
@@ -127,7 +139,8 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
+		super.onCreateOptionsMenu(menu);
+		
 		getMenuInflater().inflate(R.menu.result, menu);
 		
 		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
@@ -150,22 +163,51 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 			}
 
 		});
+		
+		menu.add(Menu.NONE, SCAN_ID, Menu.NONE, R.string.menu_scan).setIcon(android.R.drawable.ic_menu_camera);
+		//menu.add(Menu.NONE, SHARE_ID, Menu.NONE, R.string.menu_share).setIcon(android.R.drawable.ic_menu_share);
+	    menu.add(Menu.NONE, HISTORY_ID, Menu.NONE, R.string.menu_history).setIcon(android.R.drawable.ic_menu_recent_history);
+	    menu.add(Menu.NONE, SETTINGS_ID, Menu.NONE, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
+	    menu.add(Menu.NONE, HELP_ID, Menu.NONE, R.string.menu_help).setIcon(android.R.drawable.ic_menu_help);
+	    menu.add(Menu.NONE, ABOUT_ID, Menu.NONE, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
 
-		MenuItem scan = menu.findItem(R.id.scan);
-		scan.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				Intent intent = new Intent(getApplicationContext(),
-						Scanner.class);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+		switch(item.getItemId()){
+			case SCAN_ID:
+				intent.setClassName(this, Scanner.class.getName());
 				startActivity(intent);
-
-				return false;
-			}
-
-		});
-
-		return super.onCreateOptionsMenu(menu);
+				break;
+			case SHARE_ID:
+				intent.setClassName(this, ShareActivity.class.getName());
+				startActivity(intent);
+				break;
+			case HISTORY_ID:
+				intent.setClassName(this, HistoryActivity.class.getName());
+				startActivityForResult(intent, HISTORY_REQUEST_CODE);
+				break;
+			case SETTINGS_ID:
+				intent.setClassName(this, PreferencesActivity.class.getName());
+				startActivity(intent);
+				break;
+			case HELP_ID:
+				intent.setClassName(this, HelpActivity.class.getName());
+				startActivity(intent);
+				break;
+			case ABOUT_ID:
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		        builder.setTitle("CURT Laser");
+		        builder.setMessage("VIN Scanner built by CURT Manufacturing, LLC.\n\n Custom Development by Alex Ninneman");
+		        builder.setIcon(R.drawable.ic_action);
+		        builder.show();
+				break;
+		}
+		return true;
 	}
 	
 	public class CollectionPagerAdapter extends FragmentStatePagerAdapter{
@@ -322,7 +364,6 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 		protected Bitmap doInBackground(ImageView... imageViews) {
 			this.imageView = imageViews[0];
 			String url = (String) imageView.getTag();
-			Log.e("ImageURL", url);
 			try {
 				return download_image(url);
 			} catch (MalformedURLException e) {
@@ -342,7 +383,6 @@ public class PartResult extends FragmentActivity implements OnClickListener {
 		}
 
 		private Bitmap download_image(String u) throws IOException {
-			Log.e("Image URL", u);
 			URL url = new URL(u);
 			URLConnection conn = url.openConnection();
 			conn.setUseCaches(true);
