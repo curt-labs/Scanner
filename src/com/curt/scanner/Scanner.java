@@ -647,7 +647,7 @@ public void onSensorChanged(SensorEvent evt){
     contentsTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);
 
     TextView supplementTextView = (TextView) findViewById(R.id.contents_supplement_text_view);
-    supplementTextView.setText("Allow Alfred to decode that garbage for you...");
+    supplementTextView.setText("Allow Alfred to decrypt that encryption for you...");
     
     new GetPartsAsync().execute(displayContents,null,null);
     
